@@ -10,4 +10,4 @@ def test(path_excel_dir, para_name, para, data, iter_num):
         path_excel = path_excel_dir + str(int(time.time())) + str(int(rd.uniform(100, 900))) + '.xlsx'
         save_params(para_name, para, path_excel)
         _ = train_model(para, data, path_excel)
-        if para[2] not in ['GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN']: tf.reset_default_graph()
+        if para[2] not in ['GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN']: tf.compat.v1.reset_default_graph()

@@ -19,27 +19,27 @@ class model_LightGCN(object):
         self.layer_weight = [1/(i + 1) for i in range(self.layer + 1)]
 
         # placeholder definition
-        self.users = tf.placeholder(tf.int32, shape=(None,))
-        self.pos_items = tf.placeholder(tf.int32, shape=(None,))
-        self.neg_items = tf.placeholder(tf.int32, shape=(None,))
-        self.keep_prob = tf.placeholder(tf.float32, shape=(None))
-        self.items_in_train_data = tf.placeholder(tf.float32, shape=(None, None))
-        self.top_k = tf.placeholder(tf.int32, shape=(None))
+        self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.neg_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.keep_prob = tf.compat.v1.placeholder(tf.float32, shape=(None))
+        self.items_in_train_data = tf.compat.v1.placeholder(tf.float32, shape=(None, None))
+        self.top_k = tf.compat.v1.placeholder(tf.int32, shape=(None))
 
         if self.if_pretrain:
             self.user_embeddings = tf.Variable(self.U, name='user_embeddings')
             self.item_embeddings = tf.Variable(self.V, name='item_embeddings')
         else:
             self.user_embeddings = tf.Variable(
-                tf.random_normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32),
+                tf.random.normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32),
                 name='user_embeddings')
             self.item_embeddings = tf.Variable(
-                tf.random_normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32),
+                tf.random.normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32),
                 name='item_embeddings')
         embeddings = tf.concat([self.user_embeddings, self.item_embeddings], axis=0)
         all_embeddings = embeddings
         for l in range(self.layer):
-            embeddings = tf.sparse_tensor_dense_matmul(self.A_hat, embeddings)
+            embeddings = tf.sparse.sparse_dense_matmul(self.A_hat, embeddings)
             all_embeddings += embeddings * self.layer_weight[l + 1]
         self.user_all_embeddings, self.item_all_embeddings = tf.split(all_embeddings, [self.n_users, self.n_items], 0)
 
@@ -54,7 +54,7 @@ class model_LightGCN(object):
         self.loss = self.create_bpr_loss(self.u_embeddings, self.pos_i_embeddings, self.neg_i_embeddings) + \
                     self.lamda * self.regularization(self.u_embeddings_reg, self.pos_i_embeddings_reg,
                                                      self.neg_i_embeddings_reg)
-        self.opt = tf.train.AdamOptimizer(learning_rate=self.lr)
+        self.opt = tf.compat.v1.train.AdamOptimizer(learning_rate=self.lr)
         self.updates = self.opt.minimize(self.loss, var_list=[self.user_embeddings, self.item_embeddings])
 
         self.all_ratings = tf.matmul(self.u_embeddings, self.item_all_embeddings, transpose_a=False, transpose_b=True)
@@ -64,7 +64,7 @@ class model_LightGCN(object):
     def create_bpr_loss(self, users, pos_items, neg_items):
         pos_scores = tf.reduce_sum(tf.multiply(users, pos_items), axis=1)
         neg_scores = tf.reduce_sum(tf.multiply(users, neg_items), axis=1)
-        maxi = tf.log(tf.nn.sigmoid(pos_scores - neg_scores))
+        maxi = tf.math.log(tf.nn.sigmoid(pos_scores - neg_scores))
         loss = tf.negative(tf.reduce_sum(maxi))
         return loss
 

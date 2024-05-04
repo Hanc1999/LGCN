@@ -19,12 +19,12 @@ class model_NCF(object):
         for l in range(self.layer):
             self.weight_size_list.append(max(int(0.5 ** l * 64), 4))
 
-        self.users = tf.placeholder(tf.int32, shape=(None,))
-        self.pos_items = tf.placeholder(tf.int32, shape=(None,))
-        self.neg_items = tf.placeholder(tf.int32, shape=(None,))
-        self.keep_prob = tf.placeholder(tf.float32, shape=(None))
-        self.items_in_train_data = tf.placeholder(tf.float32, shape=(None, None))
-        self.top_k = tf.placeholder(tf.int32, shape=(None))
+        self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.neg_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.keep_prob = tf.compat.v1.placeholder(tf.float32, shape=(None))
+        self.items_in_train_data = tf.compat.v1.placeholder(tf.float32, shape=(None, None))
+        self.top_k = tf.compat.v1.placeholder(tf.int32, shape=(None))
 
         if self.if_pretrain:
             self.user_embeddings_GMF = tf.Variable(self.U, name='user_embeddings_GMF')
@@ -32,16 +32,16 @@ class model_NCF(object):
             self.user_embeddings_MLP = tf.Variable(self.U, name='user_embeddings_MLP')
             self.item_embeddings_MLP = tf.Variable(self.V, name='item_embeddings_MLP')
         else:
-            self.user_embeddings_GMF = tf.Variable(tf.random_normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_embeddings_GMF')
-            self.item_embeddings_GMF = tf.Variable(tf.random_normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_embeddings_GMF')
-            self.user_embeddings_MLP = tf.Variable(tf.random_normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_embeddings_MLP')
-            self.item_embeddings_MLP = tf.Variable(tf.random_normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_embeddings_MLP')
+            self.user_embeddings_GMF = tf.Variable(tf.random.normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_embeddings_GMF')
+            self.item_embeddings_GMF = tf.Variable(tf.random.normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_embeddings_GMF')
+            self.user_embeddings_MLP = tf.Variable(tf.random.normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_embeddings_MLP')
+            self.item_embeddings_MLP = tf.Variable(tf.random.normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_embeddings_MLP')
         self.W = []
         self.b = []
         for l in range(self.layer):
-            self.W.append(tf.Variable(tf.random_normal([self.weight_size_list[l], self.weight_size_list[l + 1]], mean=0.01, stddev=0.02, dtype=tf.float32)))
-            self.b.append(tf.Variable(tf.random_normal([1, self.weight_size_list[l + 1]], mean=0.01, stddev=0.02, dtype=tf.float32)))
-        self.h = tf.Variable(tf.random_normal([1, self.emb_dim + self.weight_size_list[-1]], mean=0.01, stddev=0.02, dtype=tf.float32), name='h')
+            self.W.append(tf.Variable(tf.random.normal([self.weight_size_list[l], self.weight_size_list[l + 1]], mean=0.01, stddev=0.02, dtype=tf.float32)))
+            self.b.append(tf.Variable(tf.random.normal([1, self.weight_size_list[l + 1]], mean=0.01, stddev=0.02, dtype=tf.float32)))
+        self.h = tf.Variable(tf.random.normal([1, self.emb_dim + self.weight_size_list[-1]], mean=0.01, stddev=0.02, dtype=tf.float32), name='h')
 
         self.u_embeddings_GMF = tf.nn.embedding_lookup(self.user_embeddings_GMF, self.users)
         self.pos_i_embeddings_GMF = tf.nn.embedding_lookup(self.item_embeddings_GMF, self.pos_items)
@@ -53,7 +53,7 @@ class model_NCF(object):
         self.pos_ratings = self.predict(self.u_embeddings_GMF, self.pos_i_embeddings_GMF, self.u_embeddings_MLP, self.pos_i_embeddings_MLP)
         self.neg_ratings = self.predict(self.u_embeddings_GMF, self.neg_i_embeddings_GMF, self.u_embeddings_MLP, self.neg_i_embeddings_MLP)
         self.loss = self.create_bpr_loss(self.pos_ratings, self.neg_ratings)
-        self.opt = tf.train.GradientDescentOptimizer(learning_rate=self.lr)
+        self.opt = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=self.lr)
         self.updates = self.opt.minimize(self.loss, var_list=[self.user_embeddings_GMF, self.item_embeddings_GMF, self.h,
                                                               self.user_embeddings_MLP, self.item_embeddings_MLP] + self.W + self.b)
 
@@ -62,7 +62,7 @@ class model_NCF(object):
         self.top_items = tf.nn.top_k(self.all_ratings, k=self.top_k, sorted=True).indices
 
     def create_bpr_loss(self, pos_scores, neg_scores):
-        maxi = tf.log(tf.nn.sigmoid(pos_scores - neg_scores))
+        maxi = tf.math.log(tf.nn.sigmoid(pos_scores - neg_scores))
         return tf.negative(tf.reduce_sum(maxi))
     
     def regularization(self, Paras):

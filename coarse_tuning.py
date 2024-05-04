@@ -24,7 +24,7 @@ def coarse_tuning(path_excel_dir, para_name, para, data, lr, lamda, min_num_coar
                 path_excel = path_excel_dir + str(int(time.time())) + str(int(rd.uniform(100, 900))) + '.xlsx'
                 save_params(para_name, para, path_excel)
                 score = train_model(para, data, path_excel)
-                if para[2] not in ['GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN']: tf.reset_default_graph()
+                if para[2] not in ['GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN']: tf.compat.v1.reset_default_graph()
                 score_matrix[x_curr, y_curr] = (score_matrix[x_curr, y_curr] * num_matrix[x_curr, y_curr] + score)/(num_matrix[x_curr, y_curr] + 1)
                 num_matrix[x_curr, y_curr] += 1
                 print(score_matrix)
@@ -79,7 +79,7 @@ def coarse_tuning(path_excel_dir, para_name, para, data, lr, lamda, min_num_coar
                 path_excel = path_excel_dir + str(int(time.time())) + str(int(rd.uniform(100, 900))) + '.xlsx'
                 save_params(para_name, para, path_excel)
                 score = train_model(para, data, path_excel)
-                if para[2] not in ['GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN']: tf.reset_default_graph()
+                if para[2] not in ['GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN']: tf.compat.v1.reset_default_graph()
                 score_matrix[x_curr, y_curr] = (score_matrix[x_curr, y_curr] * num_matrix[x_curr, y_curr] + score)/(num_matrix[x_curr, y_curr] + 1)
                 num_matrix[x_curr, y_curr] += 1
                 print(score_matrix)

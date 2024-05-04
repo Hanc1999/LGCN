@@ -25,12 +25,12 @@ class model_SGNN(object):
         self.layer_weight = [1 / (l + 1) ** 1 for l in range(self.layer + 1)]
 
         ## placeholder definition
-        self.users = tf.placeholder(tf.int32, shape=(None,))
-        self.pos_items = tf.placeholder(tf.int32, shape=(None,))
-        self.neg_items = tf.placeholder(tf.int32, shape=(None,))
-        self.keep_prob = tf.placeholder(tf.float32, shape=(None))
-        self.items_in_train_data = tf.placeholder(tf.float32, shape=(None, None))
-        self.top_k = tf.placeholder(tf.int32, shape=(None))
+        self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.neg_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
+        self.keep_prob = tf.compat.v1.placeholder(tf.float32, shape=(None))
+        self.items_in_train_data = tf.compat.v1.placeholder(tf.float32, shape=(None, None))
+        self.top_k = tf.compat.v1.placeholder(tf.int32, shape=(None))
 
         ## learnable parameters
         if self.if_pretrain:
@@ -40,11 +40,11 @@ class model_SGNN(object):
                 self.user_propagation = tf.Variable(self.P, name='user_propagation')
                 self.item_propagation = tf.Variable(self.Q, name='item_propagation')
         else:
-            self.user_embeddings = tf.Variable(tf.random_normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_embeddings')
-            self.item_embeddings = tf.Variable(tf.random_normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_embeddings')
+            self.user_embeddings = tf.Variable(tf.random.normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_embeddings')
+            self.item_embeddings = tf.Variable(tf.random.normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_embeddings')
             if self.prop_emb == 'RM':
-                self.user_propagation = tf.Variable(tf.random_normal([self.n_users, self.prop_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_propagation')
-                self.item_propagation = tf.Variable(tf.random_normal([self.n_items, self.prop_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_propagation')
+                self.user_propagation = tf.Variable(tf.random.normal([self.n_users, self.prop_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_propagation')
+                self.item_propagation = tf.Variable(tf.random.normal([self.n_items, self.prop_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_propagation')
         if self.prop_emb != 'SF': self.normalization = tf.Variable(1 / (self.n_users + self.n_items), name='normalization')
 
         ## propagation layers definition
@@ -89,7 +89,7 @@ class model_SGNN(object):
             self.reg_list += [self.u_propagation_reg, self.pos_i_propagation_reg, self.neg_i_propagation_reg]
         self.loss += self.lamda * self.regularization(self.reg_list)
 
-        self.opt = tf.train.RMSPropOptimizer(learning_rate=self.lr)
+        self.opt = tf.compat.v1.train.RMSPropOptimizer(learning_rate=self.lr)
         self.updates = self.opt.minimize(self.loss, var_list=self.var_list)
 
         ## prediction
@@ -100,7 +100,7 @@ class model_SGNN(object):
     def bpr_loss(self, users, pos_items, neg_items):
         pos_scores = tf.reduce_sum(tf.multiply(users, pos_items), axis=1)
         neg_scores = tf.reduce_sum(tf.multiply(users, neg_items), axis=1)
-        maxi = tf.log(tf.nn.sigmoid(pos_scores - neg_scores))
+        maxi = tf.math.log(tf.nn.sigmoid(pos_scores - neg_scores))
         loss = tf.negative(tf.reduce_sum(maxi))
         return loss
 
