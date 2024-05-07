@@ -1,0 +1,2 @@
+0504: lgcn, use previously generated data (item_num+user_num=8142)
+0507: lgcn and lgcn_tri uses the same training and testing data (item_num+user_num=8143)

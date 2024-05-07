@@ -15,12 +15,12 @@ class model_LGCN(object):
         self.lamda = lamda
         self.emb_dim = emb_dim
         self.emb_dim_predict = (layer + 1) * emb_dim if pooling == 'Concat' else emb_dim
-        if graph_conv == '1D': self.frequency = graph_embeddings.shape[1]
+        if graph_conv == '1D': self.frequency = graph_embeddings.shape[1] # 128, F
         else: self.frequency_U, self.frequency_V = graph_embeddings[0].shape[1], graph_embeddings[1].shape[1]
         self.layer = layer
         ## model parameters
-        self.U, self.V = pre_train_latent_factor
-        if graph_conv == '1D': self.graph_emb = graph_embeddings
+        self.U, self.V = pre_train_latent_factor # useless for the 1d case
+        if graph_conv == '1D': self.graph_emb = graph_embeddings # bases, M+N * F
         else: self.graph_emb_U, self.graph_emb_V = graph_embeddings
         ## network structure; model settings; and optimization setting
         self.graph_conv = graph_conv
@@ -34,6 +34,9 @@ class model_LGCN(object):
         self.pooling = pooling
 
         ## placeholder definition
+        # these are all predefined variables
+        # when using: sess.run([model.updates, model.loss], feed_dict={model.users: train_batch_data[:, 0], model.pos_items: train_batch_data[:, 1], model.neg_items: train_batch_data[:, 2], model.keep_prob: KEEP_PORB if MODEL == 'LGCN' else 1})
+        tf.compat.v1.disable_eager_execution() # to disable the eager mode
         self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.neg_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
@@ -46,11 +49,14 @@ class model_LGCN(object):
             self.user_embeddings = tf.Variable(self.U, name='user_embeddings')
             self.item_embeddings = tf.Variable(self.V, name='item_embeddings')
         else:
+            # randomly sample from Gaussian for the embedding initialization
             self.user_embeddings = tf.Variable(tf.random.normal([self.n_users, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='user_embeddings')
             self.item_embeddings = tf.Variable(tf.random.normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32), name='item_embeddings')
+            # todo: add persona embeddings
         if graph_conv == '1D': self.kernel = [tf.Variable(tf.random.normal([self.frequency], mean=0.01, stddev=0.02, dtype=tf.float32)) for l in range(self.layer)]
         else: self.kernel_U, self.kernel_V = [tf.Variable(tf.random.normal([self.frequency_U], mean=0.01, stddev=0.02, dtype=tf.float32)) for l in range(self.layer)], [tf.Variable(tf.random.normal([self.frequency_V], mean=0.01, stddev=0.02, dtype=tf.float32)) for l in range(self.layer)]
         if self.if_transformation: self.transformation = [tf.Variable(tf.random.normal([self.emb_dim, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32)) for l in range(self.layer)]
+        # defaultly sum
         if self.pooling == 'Sum': self.layer_weight = [(1 / (l + 1)) ** 1 for l in range(self.layer + 1)]
         if self.pooling[0: 3] == 'MLP':
             self.pooling_mlp_layer = int(self.pooling[3:])
@@ -65,6 +71,7 @@ class model_LGCN(object):
 
         ## convolutional layers definition
         self.embeddings = tf.concat([self.user_embeddings, self.item_embeddings], axis=0)
+        # todo: add persona item embeddings
         if self.pooling in ['Sum', 'Product']: self.all_embeddings = self.embeddings
         else: self.all_embeddings = [self.embeddings]
         for l in range(self.layer):
@@ -89,17 +96,20 @@ class model_LGCN(object):
         if self.pooling == 'Max': self.all_embeddings = tf.reduce_max(self.all_embeddings, 0)
         if self.pooling[0: 3] == 'MLP': self.all_embeddings = tf.nn.tanh(self.MLP(tf.concat(self.all_embeddings, 1), self.pooling_W, self.pooling_b))
         if 'L2Norm' in self.generalization: self.all_embeddings = tf.nn.l2_normalize(self.all_embeddings, 1)
+        # no normalization by default
         self.user_all_embeddings, self.item_all_embeddings = tf.split(self.all_embeddings, [self.n_users, self.n_items], 0)
+        # todo
 
         ## make prediction
-        self.u_embeddings = tf.nn.embedding_lookup(self.user_all_embeddings, self.users)
+        self.u_embeddings = tf.nn.embedding_lookup(self.user_all_embeddings, self.users) # self.users are part of the input, a subset of users
         self.pos_i_embeddings = tf.nn.embedding_lookup(self.item_all_embeddings, self.pos_items)
         self.neg_i_embeddings = tf.nn.embedding_lookup(self.item_all_embeddings, self.neg_items)
         if 'DropOut' in self.generalization:
             self.u_embeddings = tf.nn.dropout(self.u_embeddings, rate=1 - (self.keep_prob))
             self.pos_i_embeddings = tf.nn.dropout(self.pos_i_embeddings, rate=1 - (self.keep_prob))
             self.neg_i_embeddings = tf.nn.dropout(self.neg_i_embeddings, rate=1 - (self.keep_prob))
-        if self.prediction == 'InnerProduct':
+        if self.prediction == 'InnerProduct': # our focus
+            # here the pos_/neg_scores only for calculating the training loss, no need for the inference
             self.pos_scores = tf.reduce_sum(tf.multiply(self.u_embeddings, self.pos_i_embeddings), 1)
             self.neg_scores = tf.reduce_sum(tf.multiply(self.u_embeddings, self.neg_i_embeddings), 1)
             self.all_ratings = tf.matmul(self.u_embeddings, self.item_all_embeddings, transpose_a=False, transpose_b=True)
@@ -112,6 +122,7 @@ class model_LGCN(object):
 
         ## generalization
         if 'Regularization' in self.generalization:
+            # default mode is regularization
             self.u_embeddings_reg = tf.nn.embedding_lookup(self.user_embeddings, self.users)
             self.pos_i_embeddings_reg = tf.nn.embedding_lookup(self.item_embeddings, self.pos_items)
             self.neg_i_embeddings_reg = tf.nn.embedding_lookup(self.item_embeddings, self.neg_items)
@@ -126,16 +137,19 @@ class model_LGCN(object):
         if self.loss_function == 'BPR': self.loss = self.bpr_loss(self.pos_scores, self.neg_scores)
         if self.loss_function == 'CrossEntropy': self.loss = self.cross_entropy_loss(self.pos_scores, self.neg_scores)
         if self.loss_function == 'MSE': self.loss = self.mse_loss(self.pos_scores, self.neg_scores)
+        # calculates the sum of l2-norms
         if 'Regularization' in self.generalization: self.loss += self.lamda * self.regularization(self.reg_list)
 
         ## optimizer
         if self.optimization == 'SGD': self.opt = tf.compat.v1.train.GradientDescentOptimizer(learning_rate=self.lr)
+        # chosen: RMSProp
         if self.optimization == 'RMSProp': self.opt = tf.compat.v1.train.RMSPropOptimizer(learning_rate=self.lr)
         if self.optimization == 'Adam': self.opt = tf.compat.v1.train.AdamOptimizer(learning_rate=self.lr)
         if self.optimization == 'Adagrad': self.opt = tf.compat.v1.train.AdagradOptimizer(learning_rate=self.lr)
 
         ## update parameters
         self.var_list = [self.user_embeddings, self.item_embeddings]  ## learnable parameter list
+        # todo: add persona embeddings
         if self.graph_conv == '1D': self.var_list += self.kernel
         else: self.var_list += self.kernel_U + self.kernel_V
         if self.if_transformation: self.var_list += self.transformation

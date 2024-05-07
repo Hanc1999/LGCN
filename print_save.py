@@ -1,6 +1,7 @@
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl import Workbook
+import os
 
 def print_params(para_name, para):
     for i in range(len(para)):
@@ -31,23 +32,37 @@ def save_params(para_name,para,path_excel):
     wb.save(path_excel)
     # wb.close()
 
-def save_value(df_list,path_excel,first_sheet):
-    excelWriter = pd.ExcelWriter(path_excel, engine='openpyxl',mode='a')
+# def save_value(df_list,path_excel,first_sheet):
+#     # make file if not exists
+#     if not os.path.exists(path_excel):
+#         df = pd.DataFrame()
+#         df.to_excel(path_excel)
 
-    if first_sheet is False:
-        workbook = load_workbook(path_excel)
-        excelWriter.book = workbook
-        exist_sheets = workbook.get_sheet_names()
-        for df in df_list:
-            if df[1] in exist_sheets:
-                workbook.remove_sheet(workbook.get_sheet_by_name(df[1]))
-            df[0].to_excel(excel_writer=excelWriter, sheet_name=df[1],index = True)
-            excelWriter.save()
-    else:
-        for df in df_list:
-            df[0].to_excel(excel_writer=excelWriter, sheet_name=df[1], index=True)
-            excelWriter.save()
-    excelWriter.close()
+#     excelWriter = pd.ExcelWriter(path_excel, engine='openpyxl',mode='a')
+
+#     if first_sheet is False:
+#         workbook = load_workbook(path_excel)
+#         excelWriter.book = workbook
+#         exist_sheets = workbook.get_sheet_names()
+#         for df in df_list:
+#             if df[1] in exist_sheets:
+#                 workbook.remove_sheet(workbook.get_sheet_by_name(df[1]))
+#             df[0].to_excel(excel_writer=excelWriter, sheet_name=df[1],index = True)
+#             excelWriter.save()
+#     else:
+#         for df in df_list:
+#             df[0].to_excel(excel_writer=excelWriter, sheet_name=df[1], index=True)
+#             excelWriter.save()
+#     excelWriter.close()
+
+def save_value(df_list, path_excel, first_sheet=False):
+    # df_list: [[F1_df, 'F1'], [NDCG_df, 'NDCG']], 
+    if not os.path.exists(path_excel):
+        df = pd.DataFrame()
+        df.to_excel(path_excel)
+    with pd.ExcelWriter(path_excel, mode='a', engine="openpyxl", if_sheet_exists="replace",) as excelWriter:
+        for df, sheet_name in df_list:
+            df.to_excel(excel_writer=excelWriter, sheet_name=sheet_name, index=True)
 
 def df2str(df):
     df_str = ''
