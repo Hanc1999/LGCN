@@ -33,12 +33,12 @@ def read_data_tri(path_u2t, path_t2p):
     tri_graph_uidx2tidx_train = {int(k):v for k,v in tri_graph_uidx2tidx_train.items()}
     # make data and interactions
     user_num = len(tri_graph_uidx2tidx_train)
-    data = [tri_graph_uidx2tidx_train[uidx] for uidx in range(user_num)]
+    data = [tri_graph_uidx2tidx_train[uidx] for uidx in range(user_num)] # [[tidx,]]
     interactions = []
-    for user in range(user_num):
-        for item in data[user]:
+    for user in range(user_num): # user: uidx
+        for item in data[user]: # item: tidx
             interactions.append((user, item))
-    rd.shuffle(interactions)
+    rd.shuffle(interactions) # uncontrolled shuffle
     # item number
     with open(path_t2p, 'r') as f:
         tri_graph_tidx2pidx = json.load(f) # just to check the length
@@ -124,7 +124,13 @@ def read_all_data_tri(all_para):
     ## Paths of data
     DIR = 'dataset/' + DATASET + '/'
     hypergraph_embeddings_path = DIR + 'hypergraph_embeddings.json'                   # hypergraph embeddings
+    
+    # for normal
     graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
+    print(f'Reading graph_embeddings_1d from path: {graph_embeddings_1d_path}')
+    # for approach
+    # graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri_approach.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
+    
     graph_embeddings_2d_path = DIR + 'graph_embeddings_2d.json'                         # 2d graph embeddings
     pre_train_feature_path = DIR + 'pre_train_feature' + str(EMB_DIM) + '.json'         # pretrained latent factors
 

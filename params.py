@@ -2,14 +2,13 @@
 ## author@Wenhui Yu  2021.02.16
 ## email: jianlin.ywh@alibaba-inc.com
 
-# model = 10           # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
-model = 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
-dataset = 2         # 0:Amazon, 1:Movielens, 2: MBA
+model = 8          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
+dataset = 3         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
 pred_dim = 128      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
 GPU_INDEX = "0"
-DATASET = ['Amazon', 'Movielens', 'MBA'][dataset]
+DATASET = ['Amazon', 'Movielens', 'MBA', 'Instacart'][dataset]
 MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri']
 MODEL = MODEL_list[model]
 
@@ -17,13 +16,16 @@ MODEL = MODEL_list[model]
 ## we simply copy all the hyper-parameters for MBA same as the Amazon dataset
 LR_list = [[0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],
            [0.02, 0.00001, 0.0002, 0.00005, 0.0001, 0.00002, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005],
+           [0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],
            [0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],]
 LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],
               [0.01, 0, 0.02, 0.02, 0.01, 0.05, 0.02, 0.01, 0.1, 0.05, 0.1],
+              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],
               [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],]
 LAYER_list = [[0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1],
               [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1]]
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1],
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1]] # 4*11
 LR = LR_list[dataset][model]
 LAMDA = LAMDA_list[dataset][model]
 LAYER = LAYER_list[dataset][model]
@@ -32,7 +34,7 @@ EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LA
 EMB_DIM = EMB_list[model]
 # BATCH_SIZE = 10000
 BATCH_SIZE = 1000
-TEST_USER_BATCH_list = [4096, 1024, 512,]
+TEST_USER_BATCH_list = [4096, 1024, 512, 1024]
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
 N_EPOCH = 200
 IF_PRETRAIN = [False, True][0]
@@ -40,8 +42,8 @@ TEST_VALIDATION = 'Validation'  # can be changed automatically
 TOP_K = [2, 5, 10, 20, 50, 100]
 
 ## hyperparameters for LCFN and LGCN
-FREQUENCY_USER_list = [100, 300, 100]
-FREQUENCY_ITEM_list = [50, 200, 50]
+FREQUENCY_USER_list = [100, 300, 100, 100]
+FREQUENCY_ITEM_list = [50, 200, 50, 50]
 FREQUENCY_USER = FREQUENCY_USER_list[dataset] # I think both these no use for 1-d LGCN
 FREQUENCY_ITEM = FREQUENCY_ITEM_list[dataset]
 
