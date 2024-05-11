@@ -14,18 +14,23 @@ MODEL = MODEL_list[model]
 
 ## hyperparameters of all models
 ## we simply copy all the hyper-parameters for MBA same as the Amazon dataset
+# learning rate, no big change 
 LR_list = [[0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],
            [0.02, 0.00001, 0.0002, 0.00005, 0.0001, 0.00002, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005],
            [0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],
            [0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],]
+
+# regularization factor, this is quite a tunable hyperparameter
 LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],
-              [0.01, 0, 0.02, 0.02, 0.01, 0.05, 0.02, 0.01, 0.1, 0.05, 0.1],
+              [0.01, 0, 0.02, 0.02,  0.01, 0.05,   0.02, 0.01,  0.1,  0.05, 0.1],
               [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],
-              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],]
+              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.01, 0.02, 0.0075],]
+
+# layer number
 LAYER_list = [[0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1],
               [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1],
               [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1]] # 4*11
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1]] # 4*11, this always no change
 LR = LR_list[dataset][model]
 LAMDA = LAMDA_list[dataset][model]
 LAYER = LAYER_list[dataset][model]
@@ -33,10 +38,11 @@ LAYER = LAYER_list[dataset][model]
 EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
 # BATCH_SIZE = 10000
-BATCH_SIZE = 1000
-TEST_USER_BATCH_list = [4096, 1024, 512, 1024]
+BATCH_SIZE = 512
+TEST_USER_BATCH_list = [4096, 1024, 512, 4096]
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
-N_EPOCH = 200
+# N_EPOCH = 200
+N_EPOCH = 20
 IF_PRETRAIN = [False, True][0]
 TEST_VALIDATION = 'Validation'  # can be changed automatically
 TOP_K = [2, 5, 10, 20, 50, 100]

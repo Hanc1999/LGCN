@@ -17,7 +17,7 @@ tolerant = 0.1 ** 5
 epsilon = 0.1 ** 10
 
 root = '../dataset/'
-path_train = root + Dataset + '/train_data.json'
+# path_train = root + Dataset + '/train_data.json'
 path_save = root + Dataset + '/graph_embeddings_' + GRAPH_CONV + '.json'
 print('Reading data...')
 
@@ -75,6 +75,9 @@ if GRAPH_CONV == '1d':
     print('Decomposing the laplacian matrices...')
     [Lamda, graph_embeddings] = sp.sparse.linalg.eigsh(L, k = FREQUENCY, which='SM', tol = tolerant) # returns the first 128 most dominant eigen vectors
     print(Lamda[0:10])
+#     [-3.20762141e-16  1.91934563e-01  1.96396172e-01  2.34334661e-01
+#   2.49940302e-01  3.23922664e-01  3.45726434e-01  3.84062960e-01
+#   3.87341394e-01  3.88078812e-01]
 
     print('Saving features...')
     f = open(path_save, 'w')

@@ -23,7 +23,10 @@ importlib.reload(model_LGCN_tri)
 from model_LGCN_tri import model_LGCN_tri
 
 from model_SGNN import model_SGNN
-from test_model import test_model
+
+import test_model
+importlib.reload(test_model)
+from test_model import test_model, test_model_train
 
 import print_save
 importlib.reload(print_save)
@@ -71,6 +74,7 @@ def train_model(para, data, path_excel):
     ## Training iteratively
     F1_max = 0
     F1_df = pd.DataFrame(columns=TOP_K)
+    F1_df_train = pd.DataFrame(columns=TOP_K) # to log the training loss's changes
     NDCG_df = pd.DataFrame(columns=TOP_K)
     t1 = time.perf_counter()
 
@@ -92,6 +96,7 @@ def train_model(para, data, path_excel):
             ## test the model each epoch
             F1, NDCG = test_model(sess, model, para_test)
             F1_max = max(F1_max, F1[0])
+            # F1_train, NDCG_train = test_model_train(sess, model, para_test)
             ## print performance
             # print_value([epoch + 1, loss, F1_max, F1, NDCG])
             # if epoch % 10 == 0: print('%.5f' % (F1_max), end = ' ', flush = True)
@@ -100,6 +105,8 @@ def train_model(para, data, path_excel):
             ## save performance
             F1_df.loc[epoch + 1] = F1
             NDCG_df.loc[epoch + 1] = NDCG
+            # F1_df_train.loc[epoch + 1] = F1_train
+            # save_value([[F1_df, 'F1'], [F1_df_train, 'F1_train'], [NDCG_df, 'NDCG']], path_excel, first_sheet=False)
             save_value([[F1_df, 'F1'], [NDCG_df, 'NDCG']], path_excel, first_sheet=False)
             if loss > 10 ** 10: break
     t2 = time.perf_counter()

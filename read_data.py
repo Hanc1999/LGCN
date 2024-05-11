@@ -162,3 +162,6 @@ def read_all_data_tri(all_para):
 
     print('Data all read successfully!')
     return train_data, train_data_interaction, user_num, item_num, persona_num, test_data, pre_train_feature, hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix, IF_PRETRAIN
+    # 0:train_data, 1:train_data_interaction, 2:user_num, 3:item_num, 4:persona_num, 5:test_data,
+    # 6:pre_train_feature, 7:hypergraph_embeddings, 8:graph_embeddings, 9:propagation_embeddings,
+    # 10:sparse_propagation_matrix, 11:IF_PRETRAIN
