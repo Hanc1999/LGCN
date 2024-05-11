@@ -2,7 +2,7 @@
 ## author@Wenhui Yu  2021.02.16
 ## email: jianlin.ywh@alibaba-inc.com
 
-model = 8          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
+model = 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
 dataset = 3         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
 pred_dim = 128      # predictive embedding dimensionality (must align with the pretraining)
 
@@ -18,13 +18,13 @@ MODEL = MODEL_list[model]
 LR_list = [[0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],
            [0.02, 0.00001, 0.0002, 0.00005, 0.0001, 0.00002, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005],
            [0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],
-           [0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.0005, 0.0005, 0.0005],]
+           [0.05, 0.0002, 0.001, 0.0001, 0.0001, 0.0001, 0.005, 0.0005, 0.00005, 0.0005, 0.00005],]
 
 # regularization factor, this is quite a tunable hyperparameter
 LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],
               [0.01, 0, 0.02, 0.02,  0.01, 0.05,   0.02, 0.01,  0.1,  0.05, 0.1],
               [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],
-              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.01, 0.02, 0.0075],]
+              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02],]
 
 # layer number
 LAYER_list = [[0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1],
@@ -38,11 +38,11 @@ LAYER = LAYER_list[dataset][model]
 EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
 # BATCH_SIZE = 10000
-BATCH_SIZE = 512
+BATCH_SIZE = 10000
 TEST_USER_BATCH_list = [4096, 1024, 512, 4096]
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
 # N_EPOCH = 200
-N_EPOCH = 20
+N_EPOCH = 200
 IF_PRETRAIN = [False, True][0]
 TEST_VALIDATION = 'Validation'  # can be changed automatically
 TOP_K = [2, 5, 10, 20, 50, 100]

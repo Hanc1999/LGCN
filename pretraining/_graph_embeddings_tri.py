@@ -43,7 +43,7 @@ user_number = len(tri_graph_uidx2tidx_train)
 item_number = len(tri_graph_tidx2pidx)
 assert item_number == max(list(tri_graph_tidx2pidx.keys())) + 1
 # persona_number = max([max(v) for v in tri_graph_uidx2pidx.values()]) + 1
-persona_number = 20
+persona_number = 51
 
 
 print(persona_number)
