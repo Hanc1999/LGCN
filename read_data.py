@@ -10,21 +10,21 @@ import numpy as np
 import random as rd
 from dense2sparse import propagation_matrix
 
-# def read_data(path):
-#     with open(path) as f:
-#         line = f.readline()
-#         data = json.loads(line)
-#     f.close()
-#     user_num = len(data)
-#     item_num = 0
-#     interactions = []
-#     for user in range(user_num):
-#         for item in data[user]:
-#             interactions.append((user, item))
-#             item_num = max(item, item_num)
-#     item_num += 1
-#     rd.shuffle(interactions)
-#     return(data, interactions, user_num, item_num)
+def read_data(path):
+    with open(path) as f:
+        line = f.readline()
+        data = json.loads(line)
+    f.close()
+    user_num = len(data)
+    item_num = 0
+    interactions = []
+    for user in range(user_num):
+        for item in data[user]:
+            interactions.append((user, item))
+            item_num = max(item, item_num)
+    item_num += 1
+    rd.shuffle(interactions)
+    return(data, interactions, user_num, item_num)
 
 def read_data_tri(path_u2t, path_t2p):
     with open(path_u2t, 'r') as f:
@@ -117,7 +117,7 @@ def read_all_data(all_para):
     persona_num = 0
     return train_data, train_data_interaction, user_num, item_num, persona_num, test_data, pre_train_feature, hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix, IF_PRETRAIN
 
-def read_all_data_tri(all_para):
+def read_all_data_tri(all_para, approximate=False):
     [_, DATASET, MODEL, _, _, _, EMB_DIM, _, _, _, IF_PRETRAIN, TEST_VALIDATION, _, FREQUENCY_USER, FREQUENCY_ITEM, FREQUENCY, _, _, GRAPH_CONV, _, _, _, _, _, _, _, PROP_DIM, PROP_EMB, IF_NORM] = all_para
     [hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix] = [0, 0, 0, 0]
 
@@ -125,11 +125,14 @@ def read_all_data_tri(all_para):
     DIR = 'dataset/' + DATASET + '/'
     hypergraph_embeddings_path = DIR + 'hypergraph_embeddings.json'                   # hypergraph embeddings
     
-    # for normal
-    graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
+    if not approximate:
+        # normal case
+        graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
+    else:
+        # approximated case
+        graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri_approach.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
+    
     print(f'Reading graph_embeddings_1d from path: {graph_embeddings_1d_path}')
-    # for approach
-    # graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri_approach.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
     
     graph_embeddings_2d_path = DIR + 'graph_embeddings_2d.json'                         # 2d graph embeddings
     pre_train_feature_path = DIR + 'pre_train_feature' + str(EMB_DIM) + '.json'         # pretrained latent factors
@@ -140,7 +143,7 @@ def read_all_data_tri(all_para):
     path_u2t = DIR + 'tri_graph_uidx2tidx_train.json'
     path_t2p = DIR + 'tri_graph_tidx2pidx.json'
     [train_data, train_data_interaction, user_num, item_num] = read_data_tri(path_u2t, path_t2p)
-    persona_num = 20
+    persona_num = 51 # fixed
 
     ## load test data    
     test_vali_path = DIR + 'tri_graph_uidx2tidx_valid.json' if TEST_VALIDATION == 'Validation' else DIR + 'tri_graph_uidx2tidx_test.json'
