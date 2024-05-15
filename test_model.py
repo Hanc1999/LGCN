@@ -73,7 +73,7 @@ def test_model_store(sess, model, para_test, save_path):
     results = {}
     for u_index, user in enumerate(test_batch):
         if len(test_data[user]) > 0:
-            results[user] = [u_index, test_data, user_top_items[u_index]]
+            results[user] = [u_index, list(test_data[user]), list(user_top_items[u_index][:100])]
     with open(save_path, 'w') as file:
         json.dump(results, file)
 
