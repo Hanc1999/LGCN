@@ -26,7 +26,7 @@ from model_SGNN import model_SGNN
 
 import test_model
 importlib.reload(test_model)
-from test_model import test_model, test_model_train
+from test_model import test_model, test_model_train, test_model_store
 
 import print_save
 importlib.reload(print_save)
@@ -40,7 +40,7 @@ import pandas as pd
 import time
 from tqdm import tqdm
 
-def train_model(para, data, path_excel):
+def train_model(para, data, path_excel, results_save_path=''):
     ## data and hyperparameters
     [train_data, train_data_interaction, user_num, item_num, persona_num, test_data, pre_train_feature, hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix, _] = data
     [_, _, MODEL, LR, LAMDA, LAYER, EMB_DIM, BATCH_SIZE, TEST_USER_BATCH, N_EPOCH, IF_PRETRAIN, _, TOP_K] = para[0:13]
@@ -111,4 +111,10 @@ def train_model(para, data, path_excel):
             if loss > 10 ** 10: break
     t2 = time.perf_counter()
     print('time cost:', (t2 - t1) / 200)
+    
+    if results_save_path:
+        print('Saving results...')
+        test_model_store(sess, model, para_test, results_save_path)
+        print('Well saved.')
+    
     return F1_max
