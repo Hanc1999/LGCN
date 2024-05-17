@@ -3,7 +3,7 @@
 ## email: jianlin.ywh@alibaba-inc.com
 
 model = 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
-dataset = 3         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
+dataset = 2         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
 pred_dim = 128      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
@@ -37,8 +37,8 @@ LAYER = LAYER_list[dataset][model]
 # dimensionality of the embedding layer
 EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
-BATCH_SIZE = 40000 # 10000
-TEST_USER_BATCH_list = [4096, 1024, 512, 4096]
+BATCH_SIZE = 10000 # 40000
+TEST_USER_BATCH_list = [4096, 1024, 4297, 4096] # select all users for MBA
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
 N_EPOCH = 300 # 200
 IF_PRETRAIN = [False, True][0]

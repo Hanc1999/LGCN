@@ -143,7 +143,7 @@ def read_all_data_tri(all_para, approximate=False):
     path_u2t = DIR + 'tri_graph_uidx2tidx_train.json'
     path_t2p = DIR + 'tri_graph_tidx2pidx.json'
     [train_data, train_data_interaction, user_num, item_num] = read_data_tri(path_u2t, path_t2p)
-    persona_num = 51 # fixed
+    persona_num = 20 # 51, fixed
 
     ## load test data    
     test_vali_path = DIR + 'tri_graph_uidx2tidx_valid.json' if TEST_VALIDATION == 'Validation' else DIR + 'tri_graph_uidx2tidx_test.json'
