@@ -168,3 +168,102 @@ def read_all_data_tri(all_para, approximate=False):
     # 0:train_data, 1:train_data_interaction, 2:user_num, 3:item_num, 4:persona_num, 5:test_data,
     # 6:pre_train_feature, 7:hypergraph_embeddings, 8:graph_embeddings, 9:propagation_embeddings,
     # 10:sparse_propagation_matrix, 11:IF_PRETRAIN
+
+
+def read_all_data_lightGCN(all_para):
+    [_, DATASET, MODEL, _, _, _, EMB_DIM, _, _, _, IF_PRETRAIN, TEST_VALIDATION, _, FREQUENCY_USER, FREQUENCY_ITEM, FREQUENCY, _, _, GRAPH_CONV, _, _, _, _, _, _, _, PROP_DIM, PROP_EMB, IF_NORM] = all_para
+    [hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix] = [0, 0, 0, 0]
+
+    ## Paths of data
+    DIR = 'dataset/' + DATASET + '/'
+    # train_path = DIR + 'train_data.json'
+    # test_path = DIR + 'test_data.json'
+    pathu2t = DIR + 'tri_graph_uidx2tidx_train.json'
+    patht2p = DIR + 'tri_graph_tidx2pidx.json'
+
+    validation_path = DIR + 'validation_data.json'
+    hypergraph_embeddings_path = DIR + 'hypergraph_embeddings.json'                     # hypergraph embeddings
+    graph_embeddings_1d_path = DIR + 'graph_embeddings_1d.json'                         # 1d graph embeddings
+    graph_embeddings_2d_path = DIR + 'graph_embeddings_2d.json'                         # 2d graph embeddings
+    pre_train_feature_path = DIR + 'pre_train_feature' + str(EMB_DIM) + '.json'         # pretrained latent factors
+    if MODEL == 'SGNN': propagation_embeddings_path = DIR + 'pre_train_feature' + str(PROP_DIM) + '.json'   # pretrained latent factors
+
+    ## Load data
+    ## load training data
+    print('Reading data...')
+    [train_data, train_data_interaction, user_num, item_num] = read_data_tri(pathu2t, patht2p)
+
+    ## load test data
+    test_vali_path = DIR + 'tri_graph_uidx2tidx_valid.json' if TEST_VALIDATION == 'Validation' else DIR + 'tri_graph_uidx2tidx_test.json'
+    test_data = read_data_tri(test_vali_path, patht2p)[0]
+
+    ## load pre-trained embeddings for all deep models
+    if IF_PRETRAIN:
+        try: pre_train_feature = read_bases(pre_train_feature_path, EMB_DIM, EMB_DIM)
+        except:
+            print('There is no pre-trained embeddings found!!')
+            pre_train_feature = [0, 0]
+            IF_PRETRAIN = False
+    else:
+        pre_train_feature = [0, 0]
+
+    ## load pre-trained transform bases for LCFN and SGNN
+    # if MODEL == 'LCFN': hypergraph_embeddings = read_bases(hypergraph_embeddings_path, FREQUENCY_USER, FREQUENCY_ITEM)
+    # if MODEL == 'LGCN':
+    #     if GRAPH_CONV == '1D': graph_embeddings = read_bases1(graph_embeddings_1d_path, FREQUENCY)
+    #     if GRAPH_CONV == '2D_graph': graph_embeddings = read_bases(graph_embeddings_2d_path, FREQUENCY_USER, FREQUENCY_ITEM)
+    #     if GRAPH_CONV == '2D_hyper_graph': graph_embeddings = read_bases(hypergraph_embeddings_path, FREQUENCY_USER, FREQUENCY_ITEM)
+    # if MODEL == 'SGNN':
+    #     if PROP_EMB == 'RM': propagation_embeddings = read_bases(propagation_embeddings_path, PROP_DIM, PROP_DIM)
+    #     if PROP_EMB == 'SF': propagation_embeddings = read_bases1(graph_embeddings_1d_path, PROP_DIM, IF_NORM)
+    #     if PROP_EMB == 'PE': propagation_embeddings = 0
+
+    # ## convert dense graph to sparse graph
+    # if MODEL in ['GCMC', 'SCF', 'CGMC']: sparse_propagation_matrix = propagation_matrix(train_data_interaction, user_num, item_num, 'left_norm')
+    if MODEL in ['LightGCN']: sparse_propagation_matrix = propagation_matrix(train_data_interaction, user_num, item_num, 'sym_norm')
+
+    print('Data all read successfully!')
+    persona_num = 0
+    return train_data, train_data_interaction, user_num, item_num, persona_num, test_data, pre_train_feature, hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix, IF_PRETRAIN
+
+
+def read_all_data_LCFN(all_para):
+    [_, DATASET, MODEL, _, _, _, EMB_DIM, _, _, _, IF_PRETRAIN, TEST_VALIDATION, _, FREQUENCY_USER, FREQUENCY_ITEM, FREQUENCY, _, _, GRAPH_CONV, _, _, _, _, _, _, _, PROP_DIM, PROP_EMB, IF_NORM] = all_para
+    [hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix] = [0, 0, 0, 0]
+
+    ## Paths of data
+    DIR = 'dataset/' + DATASET + '/'
+    pathu2t = DIR + 'tri_graph_uidx2tidx_train.json'
+    patht2p = DIR + 'tri_graph_tidx2pidx.json'
+
+    # train_path = DIR + 'train_data.json'
+    # test_path = DIR + 'test_data.json'
+    # validation_path = DIR + 'validation_data.json'
+    hypergraph_embeddings_path = DIR + 'hypergraph_embeddings.json'                     # hypergraph embeddings
+    # graph_embeddings_1d_path = DIR + 'graph_embeddings_1d.json'                         # 1d graph embeddings
+    # graph_embeddings_2d_path = DIR + 'graph_embeddings_2d.json'                         # 2d graph embeddings
+    pre_train_feature_path = DIR + 'pre_train_feature' + str(EMB_DIM) + '.json'         # pretrained latent factors
+
+    ## Load data
+    ## load training data
+    print('Reading data...')
+    [train_data, train_data_interaction, user_num, item_num] = read_data_tri(pathu2t, patht2p)
+    ## load test data
+    test_vali_path = DIR + 'tri_graph_uidx2tidx_valid.json' if TEST_VALIDATION == 'Validation' else DIR + 'tri_graph_uidx2tidx_test.json'
+    test_data = read_data_tri(test_vali_path, patht2p)[0]
+    ## load pre-trained embeddings for all deep models
+    if IF_PRETRAIN:
+        try: pre_train_feature = read_bases(pre_train_feature_path, EMB_DIM, EMB_DIM)
+        except:
+            print('There is no pre-trained embeddings found!!')
+            pre_train_feature = [0, 0]
+            IF_PRETRAIN = False
+    else:
+        pre_train_feature = [0, 0]
+
+    ## load pre-trained transform bases for LCFN and SGNN
+    if MODEL == 'LCFN': hypergraph_embeddings = read_bases(hypergraph_embeddings_path, FREQUENCY_USER, FREQUENCY_ITEM)
+
+    print('Data all read successfully!')
+    persona_num = 0
+    return train_data, train_data_interaction, user_num, item_num, persona_num, test_data, pre_train_feature, hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix, IF_PRETRAIN
