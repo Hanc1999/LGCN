@@ -8,26 +8,50 @@ from numpy import *
 import numpy as np
 import json
 
-DATASET = 0                             # 0 for Amazon, 1 for Movielens
-FREQUENCY_U = [100, 300][DATASET]       # dimensionality of the base of the user graph
-FREQUENCY_I = [50, 200][DATASET]        # dimensionality of the base of the user graph
+# DATASET = 2                             # 0 for Amazon, 1 for Movielens
+# FREQUENCY_U = [100, 300][DATASET]       # dimensionality of the base of the user graph
+# FREQUENCY_I = [50, 200][DATASET]        # dimensionality of the base of the user graph
 IF_WEIGHTED = [False, True][0]         # 0 for uniform weighted, 1 for weighted by the 1/popularity.
-Dataset = ['Amazon', 'Movielens'][DATASET]
+# Dataset = ['Amazon', 'Movielens', 'MBA', 'Instacart'][DATASET]
+# tolerant = 0.1 ** 5
+# epsilon = 0.1 ** 10
+
+DATASET = 3             # 0 for Amazon, 1 for Movielens, 2 for MBA, 3 for Instacart
+FREQUENCY = 128         # dimensionality of the base, the 'cutoff' frequency, relates to the de-noising level, should be tuned
+FREQUENCY_U = [100, 300, 100, 100][DATASET]   # dimensionality of the base of the user graph (no use for 1-d)
+FREQUENCY_I = [50, 200, 50, 50][DATASET]    # dimensionality of the base of the user graph (no use for 1-d)
+# GRAPH_CONV = ['1d', '2d'][0]            # 0 for 1d convolution and 1 for 2d
+Dataset = ['Amazon', 'Movielens', 'MBA', 'Instacart'][DATASET]
 tolerant = 0.1 ** 5
 epsilon = 0.1 ** 10
 
+
 root = '../dataset/'
-path_train = root + Dataset + '/train_data.json'
+u2t_train_path = root + Dataset + '/tri_graph_uidx2tidx_train.json'
+t2p_path = root + Dataset + '/tri_graph_tidx2pidx.json'
+
+# path_train = root + Dataset + '/train_data.json'
 path_save = root + Dataset + '/hypergraph_embeddings.json'
 print('Reading data...')
-with open(path_train) as f:
-    line = f.readline()
-    data = json.loads(line)
+with open(u2t_train_path) as f:
+    # line = f.readline()
+    # data = json.loads(line)
+    tri_graph_uidx2tidx_train = json.load(f)
+with open(t2p_path, 'r') as f:
+    tri_graph_tidx2pidx = json.load(f)
+
 f.close()
-user_number = len(data)
-item_number = 0
-for item_list in data: item_number = max(item_number, max(item_list))
-item_number += 1
+tri_graph_uidx2tidx_train = {int(k):v for k,v in tri_graph_uidx2tidx_train.items()}
+tri_graph_tidx2pidx = {int(k):v for k,v in tri_graph_tidx2pidx.items()}
+
+user_number = len(tri_graph_uidx2tidx_train)
+item_number = len(tri_graph_tidx2pidx)
+
+data = [tri_graph_uidx2tidx_train[uidx] for uidx in range(user_number)]
+# user_number = len(data)
+# item_number = 0
+# for item_list in data: item_number = max(item_number, max(item_list))
+# item_number += 1
 
 print('Initializing...')
 H_u = sp.sparse.lil_matrix((user_number, item_number))

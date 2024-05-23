@@ -2,8 +2,8 @@
 ## author@Wenhui Yu  2021.02.16
 ## email: jianlin.ywh@alibaba-inc.com
 
-model = 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
-dataset = 3         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
+model = 10 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri
+dataset = 2         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
 pred_dim = 128      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
@@ -37,8 +37,8 @@ LAYER = LAYER_list[dataset][model]
 # dimensionality of the embedding layer
 EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
-BATCH_SIZE = 40000 # 10000
-TEST_USER_BATCH_list = [4096, 1024, 512, 4096]
+BATCH_SIZE = 10000 # 40000
+TEST_USER_BATCH_list = [4096, 1024, 512, 4096] # select all users for MBA: 4297
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
 N_EPOCH = 300 # 200
 IF_PRETRAIN = [False, True][0]
@@ -55,11 +55,11 @@ FREQUENCY_ITEM = FREQUENCY_ITEM_list[dataset]
 FREQUENCY = 128
 KEEP_PORB = 0.9
 SAMPLE_RATE = 1
-GRAPH_CONV = ['1D', '2D_graph', '2D_hyper_graph'][0]
+GRAPH_CONV = ['1D', '2D_graph', '2D_hyper_graph'][0] # 2
 PREDICTION = ['InnerProduct', 'MLP3'][0]
 LOSS_FUNCTION = ['BPR', 'CrossEntropy', 'MSE'][0]
 GENERALIZATION = ['Regularization', 'DropOut', 'Regularization+DropOut', 'L2Norm'][0]
-OPTIMIZATION = ['SGD', 'Adagrad', 'RMSProp', 'Adam'][2]
+OPTIMIZATION = ['SGD', 'Adagrad', 'RMSProp', 'Adam'][2] # 3
 IF_TRASFORMATION = [False, True][0]                           # 0 for not having transformation matrix,1 for having
 ACTIVATION = ['None', 'Tanh', 'Sigmoid', 'ReLU'][0]          # select the activation function
 POOLING = ['Concat', 'Sum', 'Max', 'Product', 'MLP3'][1]    # select the pooling strategy, the layer of mlp is also changable
