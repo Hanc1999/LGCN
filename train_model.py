@@ -22,6 +22,10 @@ import model_LGCN_tri
 importlib.reload(model_LGCN_tri)
 from model_LGCN_tri import model_LGCN_tri
 
+import model_LightGCN_tri
+importlib.reload(model_LightGCN_tri)
+from model_LightGCN_tri import model_LightGCN_tri
+
 from model_SGNN import model_SGNN
 
 import test_model
@@ -59,6 +63,7 @@ def train_model(para, data, path_excel, results_save_path='experiment_result/MBA
     if MODEL == 'LGCN': model = model_LGCN(n_users=user_num, n_items=item_num, lr=LR, lamda=LAMDA, emb_dim=EMB_DIM, layer=LAYER, pre_train_latent_factor=pre_train_feature, graph_embeddings=graph_embeddings, graph_conv = GRAPH_CONV, prediction = PREDICTION, loss_function=LOSS_FUNCTION, generalization = GENERALIZATION, optimization=OPTIMIZATION, if_pretrain=IF_PRETRAIN, if_transformation=IF_TRASFORMATION, activation=ACTIVATION, pooling=POOLING)
     if MODEL == 'SGNN': model = model_SGNN(n_users=user_num, n_items=item_num, lr=LR, lamda=LAMDA, emb_dim=EMB_DIM, layer=LAYER, pre_train_latent_factor=pre_train_feature, propagation_embeddings=propagation_embeddings, if_pretrain=IF_PRETRAIN, prop_emb=PROP_EMB)
     if MODEL == 'LGCN_tri': model = model_LGCN_tri(n_users=user_num, n_items=item_num, n_personas=persona_num, lr=LR, lamda=LAMDA, emb_dim=EMB_DIM, layer=LAYER, pre_train_latent_factor=pre_train_feature, graph_embeddings=graph_embeddings, graph_conv = GRAPH_CONV, prediction = PREDICTION, loss_function=LOSS_FUNCTION, generalization = GENERALIZATION, optimization=OPTIMIZATION, if_pretrain=IF_PRETRAIN, if_transformation=IF_TRASFORMATION, activation=ACTIVATION, pooling=POOLING)
+    if MODEL == 'LightGCN_tri': model = model_LightGCN_tri(layer=LAYER, n_users=user_num, n_items=item_num, n_personas=persona_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix)
 
     # debug,
     # return model
