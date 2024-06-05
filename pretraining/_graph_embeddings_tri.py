@@ -7,7 +7,7 @@ import scipy.sparse.linalg
 from numpy import *
 import json
 
-DATASET = 2             # 0 for Amazon, 1 for Movielens, 2 for MBA, 3 for Instacart
+DATASET = 3             # 0 for Amazon, 1 for Movielens, 2 for MBA, 3 for Instacart
 FREQUENCY = 128         # dimensionality of the base, the 'cutoff' frequency, relates to the de-noising level, should be tuned
 FREQUENCY_U = [100, 300, 100, 100][DATASET]   # dimensionality of the base of the user graph (no use for 1-d)
 FREQUENCY_I = [50, 200, 50, 50][DATASET]    # dimensionality of the base of the user graph (no use for 1-d)
@@ -49,7 +49,7 @@ user_number = len(tri_graph_uidx2tidx_train)
 item_number = len(tri_graph_tidx2pidx)
 assert item_number == max(list(tri_graph_tidx2pidx.keys())) + 1
 # persona_number = max([max(v) for v in tri_graph_uidx2pidx.values()]) + 1
-persona_number = 20
+persona_number = 51 # 20
 print(persona_number)
 
 if GRAPH_CONV == '1d':

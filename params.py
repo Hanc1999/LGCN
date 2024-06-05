@@ -2,8 +2,8 @@
 ## author@Wenhui Yu  2021.02.16
 ## email: jianlin.ywh@alibaba-inc.com
 
-model = 11 # 11          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri
-dataset = 2         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
+model = 10 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri
+dataset = 3         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
 pred_dim = 128      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
@@ -29,16 +29,16 @@ LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02
 # layer number
 LAYER_list = [[0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
               [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2]] # 4*12, this always no change
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1], # change to 1 layer for lightgcn_tri
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1]] # 4*12, this always no change
 LR = LR_list[dataset][model]
 LAMDA = LAMDA_list[dataset][model]
 LAYER = LAYER_list[dataset][model]
 # dimensionality of the embedding layer
 EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
-BATCH_SIZE = 10000 # 40000
-TEST_USER_BATCH_list = [4096, 1024, 4096, 4096] # select all users for MBA: 4297
+BATCH_SIZE = 40000 # 10000
+TEST_USER_BATCH_list = [4096, 1024, 512, 20620] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
 N_EPOCH = 300 # 200
 IF_PRETRAIN = [False, True][0]
@@ -59,7 +59,7 @@ GRAPH_CONV = ['1D', '2D_graph', '2D_hyper_graph'][0] # 2
 PREDICTION = ['InnerProduct', 'MLP3'][0]
 LOSS_FUNCTION = ['BPR', 'CrossEntropy', 'MSE'][0]
 GENERALIZATION = ['Regularization', 'DropOut', 'Regularization+DropOut', 'L2Norm'][0]
-OPTIMIZATION = ['SGD', 'Adagrad', 'RMSProp', 'Adam'][3] # light: 3
+OPTIMIZATION = ['SGD', 'Adagrad', 'RMSProp', 'Adam'][2] # light: 3
 IF_TRASFORMATION = [False, True][0]                           # 0 for not having transformation matrix,1 for having
 ACTIVATION = ['None', 'Tanh', 'Sigmoid', 'ReLU'][0]          # select the activation function
 POOLING = ['Concat', 'Sum', 'Max', 'Product', 'MLP3'][1]    # select the pooling strategy, the layer of mlp is also changable
