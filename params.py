@@ -2,7 +2,7 @@
 ## author@Wenhui Yu  2021.02.16
 ## email: jianlin.ywh@alibaba-inc.com
 
-model = 6 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri
+model = 11 # 11          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri
 dataset = 2         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart
 pred_dim = 128      # predictive embedding dimensionality (must align with the pretraining)
 
@@ -29,7 +29,7 @@ LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02
 # layer number
 LAYER_list = [[0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
               [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1],
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
               [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2]] # 4*12, this always no change
 LR = LR_list[dataset][model]
 LAMDA = LAMDA_list[dataset][model]
