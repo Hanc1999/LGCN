@@ -195,6 +195,8 @@ def read_all_data_tri(all_para, approximate=False):
         persona_num = 20 # 20, for MBA
     elif DATASET == 'Instacart':
         persona_num = 51 # 51, fixed for Instacart
+    elif DATASET == 'Instacart_full':
+        persona_num = 51
     
     # graph_embeddings_2d_path = DIR + 'graph_embeddings_2d.json'                         # 2d graph embeddings
 
