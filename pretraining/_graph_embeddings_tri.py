@@ -7,13 +7,13 @@ import scipy.sparse.linalg
 from numpy import *
 import json
 
-DATASET = 2             # 0 for Amazon, 1 for Movielens, 2 for MBA, 3 for Instacart
+DATASET = 4             # 0 for Amazon, 1 for Movielens, 2 for MBA, 3 for Instacart, 4 for Instacart_full
 FREQUENCY = 128         # dimensionality of the base, the 'cutoff' frequency, relates to the de-noising level, should be tuned
-FREQUENCY_U = [100, 300, 100, 100][DATASET]   # dimensionality of the base of the user graph (no use for 1-d)
-FREQUENCY_I = [50, 200, 50, 50][DATASET]    # dimensionality of the base of the user graph (no use for 1-d)
+FREQUENCY_U = [100, 300, 100, 100, 100][DATASET]   # dimensionality of the base of the user graph (no use for 1-d)
+FREQUENCY_I = [50, 200, 50, 50, 50][DATASET]    # dimensionality of the base of the user graph (no use for 1-d)
 GRAPH_CONV = ['1d', '2d'][0]            # 0 for 1d convolution and 1 for 2d
 APPROXIMATE = True # False
-Dataset = ['Amazon', 'Movielens', 'MBA', 'Instacart'][DATASET]
+Dataset = ['Amazon', 'Movielens', 'MBA', 'Instacart', 'Instacart_full'][DATASET]
 tolerant = 0.1 ** 5
 epsilon = 0.1 ** 10
 
