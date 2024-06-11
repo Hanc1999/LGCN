@@ -24,7 +24,8 @@ t2p_path = root + Dataset + '/tri_graph_tidx2pidx.json'
 
 if APPROXIMATE:
     # approaximated case
-    u2p_path = root + Dataset + '/tri_graph_uidx2pidx_approach.json'
+    # u2p_path = root + Dataset + '/tri_graph_uidx2pidx_approach.json'
+    u2p_path = root + Dataset + '/tri_graph_uidx2pidx_app_e_0.001.json'
     path_save = root + Dataset + '/graph_embeddings_' + GRAPH_CONV + '_tri_approach.json'
 else:
     # normal case
@@ -49,8 +50,11 @@ user_number = len(tri_graph_uidx2tidx_train)
 item_number = len(tri_graph_tidx2pidx)
 assert item_number == max(list(tri_graph_tidx2pidx.keys())) + 1
 # persona_number = max([max(v) for v in tri_graph_uidx2pidx.values()]) + 1
-persona_number = 51 # 20
-print(persona_number)
+if DATASET == 2:
+    persona_number = 20
+elif DATASET == 3 or DATASET == 4:
+    persona_number = 51 # 20
+print(f'persona_number:{persona_number}')
 
 if GRAPH_CONV == '1d':
     # todo: need change a lot

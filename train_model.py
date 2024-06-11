@@ -44,7 +44,7 @@ import pandas as pd
 import time
 from tqdm import tqdm
 
-def train_model(para, data, path_excel, results_save_path='experiment_result/Instacart/AB_test/Instacart_LGCN_tri_result_20620.json'):
+def train_model(para, data, path_excel, results_save_path=''):
     ## data and hyperparameters
     [train_data, train_data_interaction, user_num, item_num, persona_num, test_data, pre_train_feature, hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix, _] = data
     [_, _, MODEL, LR, LAMDA, LAYER, EMB_DIM, BATCH_SIZE, TEST_USER_BATCH, N_EPOCH, IF_PRETRAIN, _, TOP_K] = para[0:13]

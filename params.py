@@ -19,7 +19,7 @@ LR_list = [[0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0
            [0.02, 0.00001, 0.0002, 0.00005, 0.0001, 0.00002, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005,],
            [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005,],
            [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005,], 
-           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005,], ]
+           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.00025, 0.0005, 0.00025, 0.005,], ]
 
 # regularization factor, this is quite a tunable hyperparameter
 LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02,],
@@ -40,7 +40,7 @@ LAYER = LAYER_list[dataset][model]
 # dimensionality of the embedding layer
 EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
-BATCH_SIZE = 10000 # 10000
+BATCH_SIZE = 300000 # 10000/100000 failed for lgcn
 TEST_USER_BATCH_list = [4096, 1024, 512, 20620, 10000] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
 N_EPOCH = 300 # 200
