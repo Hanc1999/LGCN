@@ -188,7 +188,7 @@ def read_all_data_tri(all_para, approximate=False):
     # [train_data, train_data_interaction, user_num, item_num] = read_data_tri(path_u2t, path_t2p)
     [train_data, train_data_interaction, interactions_u2p, interactions_t2p, user_num, item_num] = read_data_tri(path_u2t, path_t2p, path_u2p)
     
-    ## load test data    
+    ## load test data
     test_vali_path = DIR + 'tri_graph_uidx2tidx_valid.json' if TEST_VALIDATION == 'Validation' else DIR + 'tri_graph_uidx2tidx_test.json'
     test_data = read_data_tri(test_vali_path, path_t2p, path_u2p)[0]
     
@@ -214,11 +214,13 @@ def read_all_data_tri(all_para, approximate=False):
             ## load pre-trained transform bases for LCFN and SGNN
             graph_embeddings = read_bases1(graph_embeddings_1d_path, FREQUENCY) # same as LGCN
         else: assert False, f'Not supported: {MODEL}, {GRAPH_CONV}'
-    elif MODEL in ['LightGCN', 'LightGCN_tri']:
+    elif MODEL in ['LightGCN', 'LightGCN_tri', 'NGCF']:
         if MODEL == 'LightGCN_tri':
             graph_tri = [train_data_interaction, interactions_u2p, interactions_t2p]
             sparse_propagation_matrix = propagation_matrix_tri(graph_tri, user_num, item_num, persona_num, 'sym_norm')
         elif MODEL == 'LightGCN':
+            sparse_propagation_matrix = propagation_matrix(train_data_interaction, user_num, item_num, 'sym_norm')
+        elif MODEL == 'NGCF':
             sparse_propagation_matrix = propagation_matrix(train_data_interaction, user_num, item_num, 'sym_norm')
     
     pre_train_feature_path = DIR + 'pre_train_feature' + str(EMB_DIM) + '.json'         # pretrained latent factors
