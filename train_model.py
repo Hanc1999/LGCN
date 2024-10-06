@@ -3,10 +3,19 @@
 
 import importlib
 
+# MF
+import model_MF
+importlib.reload(model_MF)
 from model_MF import model_MF
+
 from model_NCF import model_NCF
 from model_GCMC import model_GCMC
+
+# NGCF
+import model_NGCF
+importlib.reload(model_NGCF)
 from model_NGCF import model_NGCF
+
 from model_SCF import model_SCF
 from model_CGMC import model_CGMC
 from model_LightGCN import model_LightGCN

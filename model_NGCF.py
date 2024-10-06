@@ -17,6 +17,7 @@ class model_NGCF(object):
         self.if_pretrain = if_pretrain
         self.A_hat = sparse_graph
 
+        tf.compat.v1.disable_eager_execution() # to disable the eager mode
         # placeholder definition
         self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
