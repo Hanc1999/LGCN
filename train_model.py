@@ -9,6 +9,10 @@ importlib.reload(model_MF)
 from model_MF import model_MF
 
 from model_NCF import model_NCF
+
+# GCMC
+import model_GCMC
+importlib.reload(modelGCMC)
 from model_GCMC import model_GCMC
 
 # NGCF
