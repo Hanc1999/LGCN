@@ -12,7 +12,7 @@ from model_NCF import model_NCF
 
 # GCMC
 import model_GCMC
-importlib.reload(modelGCMC)
+importlib.reload(model_GCMC)
 from model_GCMC import model_GCMC
 
 # NGCF
