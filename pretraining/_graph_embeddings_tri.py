@@ -12,7 +12,7 @@ FREQUENCY = 128         # dimensionality of the base, the 'cutoff' frequency, re
 FREQUENCY_U = [100, 300, 100, 100, 100][DATASET]   # dimensionality of the base of the user graph (no use for 1-d)
 FREQUENCY_I = [50, 200, 50, 50, 50][DATASET]    # dimensionality of the base of the user graph (no use for 1-d)
 GRAPH_CONV = ['1d', '2d'][0]            # 0 for 1d convolution and 1 for 2d
-APPROXIMATE = True # False
+APPROXIMATE = False # False
 Dataset = ['Amazon', 'Movielens', 'MBA', 'Instacart', 'Instacart_full'][DATASET]
 tolerant = 0.1 ** 5
 epsilon = 0.1 ** 10
@@ -20,7 +20,7 @@ epsilon = 0.1 ** 10
 root = '../dataset/'
 # path_train = root + Dataset + '/train_data.json'
 u2t_train_path = root + Dataset + '/tri_graph_uidx2tidx_train.json'
-t2p_path = root + Dataset + '/tri_graph_tidx2pidx.json'
+t2p_path = root + Dataset + '/tri_graph_tidx2pidx_lifestyle.json'
 
 if APPROXIMATE:
     # approaximated case
@@ -29,7 +29,7 @@ if APPROXIMATE:
     path_save = root + Dataset + '/graph_embeddings_' + GRAPH_CONV + '_tri_approach.json'
 else:
     # normal case
-    u2p_path = root + Dataset + '/tri_graph_uidx2pidx.json'
+    u2p_path = root + Dataset + '/tri_graph_uidx2pidx_lifestyle.json'
     path_save = root + Dataset + '/graph_embeddings_' + GRAPH_CONV + '_tri.json'
 
 

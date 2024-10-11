@@ -179,12 +179,12 @@ def read_all_data_tri(all_para, approximate=False):
     ## load training data
     print('Reading data...')
     path_u2t = DIR + 'tri_graph_uidx2tidx_train.json'
-    path_t2p = DIR + 'tri_graph_tidx2pidx.json'
+    path_t2p = DIR + 'tri_graph_tidx2pidx_lifestyle.json'
     if approximate:
         # path_u2p = DIR + 'tri_graph_uidx2pidx_approach.json'
         path_u2p = DIR + 'tri_graph_uidx2pidx_app_e_0.001.json'
     else:
-        path_u2p = DIR + 'tri_graph_uidx2pidx.json'
+        path_u2p = DIR + 'tri_graph_uidx2pidx_lifestyle.json'
     # [train_data, train_data_interaction, user_num, item_num] = read_data_tri(path_u2t, path_t2p)
     [train_data, train_data_interaction, interactions_u2p, interactions_t2p, user_num, item_num] = read_data_tri(path_u2t, path_t2p, path_u2p)
     

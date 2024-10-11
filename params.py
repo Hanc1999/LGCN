@@ -40,8 +40,8 @@ LAYER = LAYER_list[dataset][model]
 # dimensionality of the embedding layer
 EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
-BATCH_SIZE = 300000 # 10000/100000 failed for lgcn
-TEST_USER_BATCH_list = [4096, 1024, 512, 20620, 10000] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096
+BATCH_SIZE = 100000 # 10000/100000 failed for lgcn
+TEST_USER_BATCH_list = [4096, 1024, 512, 4096, 10000] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
 N_EPOCH = 300 # 200
 IF_PRETRAIN = [False, True][0]
