@@ -39,6 +39,10 @@ import model_LightGCN_tri
 importlib.reload(model_LightGCN_tri)
 from model_LightGCN_tri import model_LightGCN_tri
 
+import model_LightRGCN
+importlib.reload(model_LightRGCN)
+from model_LightRGCN import model_LightRGCN
+
 from model_SGNN import model_SGNN
 
 import test_model
