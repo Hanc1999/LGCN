@@ -12,7 +12,7 @@ from tqdm.contrib.concurrent import process_map
 # external
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import tensorflow as tf
 
 tf.compat.v1.disable_eager_execution() # to disable the eager mode
