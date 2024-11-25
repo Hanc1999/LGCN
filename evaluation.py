@@ -4,8 +4,8 @@ def evaluation_F1(order, top_k, positive_item):
     epsilon = 0.1 ** 10
     top_k_items = set(order[0: top_k])
     positive_item = set(positive_item)
-    precision = len(top_k_items & positive_item) / max(len(top_k_items), epsilon)
-    recall = len(top_k_items & positive_item) / max(len(positive_item), epsilon)
+    precision = len(top_k_items & positive_item) / max(len(top_k_items)*1.0, epsilon)
+    recall = len(top_k_items & positive_item) / max(len(positive_item)*1.0, epsilon)
     F1 = 2 * precision * recall / max(precision + recall, epsilon)
     return F1
 
@@ -21,4 +21,3 @@ def evaluation_NDCG(order, top_k, positive_item):
         iDCG += 1 / log2(i + 2)
     NDCG = DCG / max(iDCG, epsilon)
     return NDCG
-
