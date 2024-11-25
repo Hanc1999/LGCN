@@ -20,7 +20,7 @@ class model_LightGCN_tri(object):
         self.layer_weight = [1/(i + 1) for i in range(self.layer + 1)]
 
         # placeholder definition
-        tf.compat.v1.disable_eager_execution() # to disable the eager mode
+        # tf.compat.v1.disable_eager_execution() # to disable the eager mode
 
         self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
@@ -77,6 +77,11 @@ class model_LightGCN_tri(object):
         loss = tf.negative(tf.reduce_sum(maxi))
         return loss
 
-    def regularization(self, users, pos_items, neg_items):
-        regularizer = tf.nn.l2_loss(users) + tf.nn.l2_loss(pos_items) + tf.nn.l2_loss(neg_items)
+    # def regularization(self, users, pos_items, neg_items):
+    #     regularizer = tf.nn.l2_loss(users) + tf.nn.l2_loss(pos_items) + tf.nn.l2_loss(neg_items)
+    #     return regularizer
+
+    # we should add the regularization loss for the persona nodes, even though their number is limited
+    def regularization(self, users, pos_items, neg_items, personas): # adds the regularization on persona nodes
+        regularizer = tf.nn.l2_loss(users) + tf.nn.l2_loss(pos_items) + tf.nn.l2_loss(neg_items) + tf.nn.l2_loss(personas)
         return regularizer

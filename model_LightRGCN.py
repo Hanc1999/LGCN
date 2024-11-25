@@ -20,7 +20,7 @@ class model_LightRGCN(object):
         self.layer_weight = [1/(i + 1) for i in range(self.layer + 1)]
 
         # placeholder definition
-        tf.compat.v1.disable_eager_execution() # to disable the eager mode
+        # tf.compat.v1.disable_eager_execution() # to disable the eager mode
 
         self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))

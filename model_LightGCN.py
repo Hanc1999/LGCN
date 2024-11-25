@@ -19,7 +19,7 @@ class model_LightGCN(object):
         self.layer_weight = [1/(i + 1) for i in range(self.layer + 1)]
 
         # placeholder definition
-        tf.compat.v1.disable_eager_execution() # to disable the eager mode
+        # tf.compat.v1.disable_eager_execution() # to disable the eager mode
 
         self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
@@ -39,7 +39,7 @@ class model_LightGCN(object):
                 tf.random.normal([self.n_items, self.emb_dim], mean=0.01, stddev=0.02, dtype=tf.float32),
                 name='item_embeddings')
         embeddings = tf.concat([self.user_embeddings, self.item_embeddings], axis=0)
-        all_embeddings = embeddings
+        all_embeddings = embeddings # the self embedding is considered by default
         for l in range(self.layer):
             embeddings = tf.sparse.sparse_dense_matmul(self.A_hat, embeddings)
             all_embeddings += embeddings * self.layer_weight[l + 1]

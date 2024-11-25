@@ -74,10 +74,13 @@ def propagation_matrix_rgcn(graph, user_num, item_num, persona_num, norm):
         item_degreeNum_uv[item] += 1
     val_uv, idx_uv = [], []
     for (user, item) in uidx2tidx_graph:
-        val_uv += [1 / (max(np.sqrt(user_degreeNum_uv[user] * item_degreeNum_uv[item]), eps))] * 2
+        val_uv += [4/5 / (max(np.sqrt(user_degreeNum_uv[user] * item_degreeNum_uv[item]), eps))]
+        val_uv += [4/5 / (max(np.sqrt(user_degreeNum_uv[user] * item_degreeNum_uv[item]), eps))]
         idx_uv += [[user, item + user_num], [item + user_num, user]]
+    val_uv = tf.constant(val_uv, dtype=tf.float32)
     A_hat_uv = tf.SparseTensor(indices=idx_uv, values=val_uv, dense_shape=[all_num, all_num])
-    signal_diag_uv = tf.linalg.diag(tf.constant([1/2]*all_num), dtype=tf.float32)
+    # signal_diag_uv = tf.linalg.diag(tf.constant([1/2]*all_num, dtype=tf.float32)) # dense diag matrix
+    # signal_diag_uv = tf.SparseTensor(indices=[[i,i] for i in range(all_num)], values=[1/2]*all_num, dense_shape=[all_num, all_num])
     # TODO: add signal control for signal_diag matrices
     
     # for A_{ur}
@@ -88,10 +91,13 @@ def propagation_matrix_rgcn(graph, user_num, item_num, persona_num, norm):
         persona_degreeNum_ur[persona] += 1
     val_ur, idx_ur = [], []
     for (user, persona) in uidx2pidx_graph:
-        val_ur += [1 / (max(np.sqrt(user_degreeNum_ur[user] * persona_degreeNum_ur[persona]), eps))] * 2
+        val_ur += [1/5 / (max(np.sqrt(user_degreeNum_ur[user] * persona_degreeNum_ur[persona]), eps))]
+        val_ur += [1/2 / (max(np.sqrt(user_degreeNum_ur[user] * persona_degreeNum_ur[persona]), eps))]
         idx_ur += [[user, persona + user_num + item_num], [persona + user_num + item_num, user]]
+    val_ur = tf.constant(val_ur, dtype=tf.float32)
     A_hat_ur = tf.SparseTensor(indices=idx_ur, values=val_ur, dense_shape=[all_num, all_num])
-    signal_diag_ur = tf.linalg.diag(tf.constant([1/2]*all_num), dtype=tf.float32)
+    # signal_diag_ur = tf.linalg.diag(tf.constant([1/2]*all_num, dtype=tf.float32))
+    # signal_diag_ur = tf.SparseTensor(indices=[[i,i] for i in range(all_num)], values=[1/2]*all_num, dense_shape=[all_num, all_num])
 
     # for A_{vr}
     item_degreeNum_vr = np.zeros(item_num)
@@ -101,10 +107,15 @@ def propagation_matrix_rgcn(graph, user_num, item_num, persona_num, norm):
         persona_degreeNum_vr[persona] += 1
     val_vr, idx_vr = [], []
     for (item, persona) in tidx2pidx_graph:
-        val_vr += [1 / (max(np.sqrt(item_degreeNum_vr[item] * persona_degreeNum_vr[persona]), eps))] * 2
+        val_vr += [1/5 / (max(np.sqrt(item_degreeNum_vr[item] * persona_degreeNum_vr[persona]), eps))]
+        val_vr += [1/2 / (max(np.sqrt(item_degreeNum_vr[item] * persona_degreeNum_vr[persona]), eps))]
         idx_vr += [[item, persona + user_num + item_num], [persona + user_num + item_num, item]]
+    val_vr = tf.constant(val_vr, dtype=tf.float32)
     A_hat_vr = tf.SparseTensor(indices=idx_vr, values=val_vr, dense_shape=[all_num, all_num])
-    signal_diag_vr = tf.linalg.diag(tf.constant([1/2]*all_num), dtype=tf.float32)
+    # signal_diag_vr = tf.linalg.diag(tf.constant([1/2]*all_num, dtype=tf.float32))
+    # signal_diag_vr = tf.SparseTensor(indices=[[i,i] for i in range(all_num)], values=[1/2]*all_num, dense_shape=[all_num, all_num])
 
-    A_hat_rgcn = tf.matmul(A_hat_uv, signal_diag_uv) + tf.matmul(A_hat_ur, signal_diag_ur) + tf.matmul(A_hat_vr, signal_diag_vr)
+    # A_hat_rgcn = tf.sparse.add(tf.sparse.add(tf.sparse.sparse_dense_matmul(A_hat_uv, signal_diag_uv), tf.sparse.sparse_dense_matmul(A_hat_ur, signal_diag_ur)), tf.sparse.sparse_dense_matmul(A_hat_vr, signal_diag_vr))
+    A_hat_rgcn = tf.sparse.add(tf.sparse.add(A_hat_uv, A_hat_ur), A_hat_vr)
+    print(A_hat_rgcn)
     return A_hat_rgcn

@@ -12,7 +12,7 @@ import importlib
 
 import dense2sparse
 importlib.reload(dense2sparse)
-from dense2sparse import propagation_matrix, propagation_matrix_tri
+from dense2sparse import propagation_matrix, propagation_matrix_tri, propagation_matrix_rgcn
 
 def read_data(path):
     with open(path) as f:
@@ -179,12 +179,12 @@ def read_all_data_tri(all_para, approximate=False):
     ## load training data
     print('Reading data...')
     path_u2t = DIR + 'tri_graph_uidx2tidx_train.json'
-    path_t2p = DIR + 'tri_graph_tidx2pidx_lifestyle.json'
+    path_t2p = DIR + 'tri_graph_tidx2pidx.json'
     if approximate:
         # path_u2p = DIR + 'tri_graph_uidx2pidx_approach.json'
         path_u2p = DIR + 'tri_graph_uidx2pidx_app_e_0.001.json'
     else:
-        path_u2p = DIR + 'tri_graph_uidx2pidx_lifestyle.json'
+        path_u2p = DIR + 'tri_graph_uidx2pidx.json'
     # [train_data, train_data_interaction, user_num, item_num] = read_data_tri(path_u2t, path_t2p)
     [train_data, train_data_interaction, interactions_u2p, interactions_t2p, user_num, item_num] = read_data_tri(path_u2t, path_t2p, path_u2p)
     
@@ -226,6 +226,7 @@ def read_all_data_tri(all_para, approximate=False):
             sparse_propagation_matrix = propagation_matrix(train_data_interaction, user_num, item_num, 'left_norm')
         elif MODEL == 'LightRGCN':
             graph_tri = [train_data_interaction, interactions_u2p, interactions_t2p]
+            # sparse_propagation_matrix = propagation_matrix_tri(graph_tri, user_num, item_num, persona_num, 'sym_norm')
             sparse_propagation_matrix = propagation_matrix_rgcn(graph_tri, user_num, item_num, persona_num, 'sym_norm')
     
     pre_train_feature_path = DIR + 'pre_train_feature' + str(EMB_DIM) + '.json'         # pretrained latent factors
