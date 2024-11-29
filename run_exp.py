@@ -7,7 +7,7 @@ from datetime import datetime
 import read_data
 import train_model
 import params
-from params import DATASET, MODEL, LR, LAMDA, LAYER, BATCH_SIZE
+from params import DATASET, MODEL, LR, LAMDA, LAYER, BATCH_SIZE, OPTIMIZATION
 from tqdm.contrib.concurrent import process_map
 # external
 import pandas as pd
@@ -29,5 +29,5 @@ read_data_res_tri = read_data.read_all_data_tri(params.all_para, approximate=Fal
 today = datetime.today()
 formatted_date = today.strftime('%Y%m%d')
 for i in range(3):
-    exsl_path = f'{DATASET}_{MODEL}_{formatted_date}_{LR}_{LAMDA}_{LAYER}_{BATCH_SIZE}_{i}.xlsx'
+    exsl_path = f'{DATASET}_{MODEL}_{formatted_date}_{LR}_{LAMDA}_{LAYER}_{BATCH_SIZE}_{OPTIMIZATION}_{i}.xlsx'
     F1_max = train_model.train_model(params.all_para[:26], read_data_res_tri, target_dir + exsl_path, '')
