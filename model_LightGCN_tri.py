@@ -62,7 +62,7 @@ class model_LightGCN_tri(object):
         # for training
         self.loss = self.create_bpr_loss(self.u_embeddings, self.pos_i_embeddings, self.neg_i_embeddings) + \
                     self.lamda * self.regularization(self.u_embeddings_reg, self.pos_i_embeddings_reg,
-                                                     self.neg_i_embeddings_reg)
+                                                     self.neg_i_embeddings_reg, self.persona_all_embeddings)
         
         if self.optimization == 'RMSProp':
             self.opt = tf.compat.v1.train.RMSPropOptimizer(learning_rate=self.lr)
