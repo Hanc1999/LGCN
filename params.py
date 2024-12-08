@@ -2,48 +2,52 @@
 ## author@Wenhui Yu  2021.02.16
 ## email: jianlin.ywh@alibaba-inc.com
 
-model = 10 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri
-dataset = 4         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart, 4: Instacart Full
-pred_dim = 128      # predictive embedding dimensionality (must align with the pretraining)
+from parse import parse_args
+
+args = parse_args() # take arguments from the command line
+
+model = args.model #12 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri, 12:LightRGCN
+dataset = args.dataset         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart, 4: Instacart Full
+pred_dim = args.pred_dim      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
 GPU_INDEX = "0"
 DATASET = ['Amazon', 'Movielens', 'MBA', 'Instacart', 'Instacart_full'][dataset]
-MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri']
+MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN']
 MODEL = MODEL_list[model]
 
 ## hyperparameters of all models
 ## we simply copy all the hyper-parameters for MBA same as the Amazon dataset
 # learning rate, no big change 
-LR_list = [[0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005,],
-           [0.02, 0.00001, 0.0002, 0.00005, 0.0001, 0.00002, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005,],
-           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005,],
-           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005,], 
-           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.00025, 0.0005, 0.00025, 0.005,], ]
+LR_list = [[0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005, 0.005,],
+           [0.02, 0.00001, 0.0002, 0.00005, 0.0001, 0.00002, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005, 0.0005,],
+           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005, 0.005,],
+           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.0005, 0.0005, 0.0005, 0.005, 0.005,], 
+           [0.05, 0.0002,  0.001,  0.0001,  0.0001, 0.0001,  0.005,  0.0005, 0.00025, 0.0005, 0.00025, 0.005, 0.005,], ]
 
 # regularization factor, this is quite a tunable hyperparameter
-LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02,],
-              [0.01, 0, 0.02, 0.02,  0.01, 0.05,   0.02, 0.01,  0.1,  0.05, 0.1,  0.02,],
-              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02,],
-              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02,],
-              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02,],]
+LAMDA_list = [[0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02, 0.02,],
+              [0.01, 0, 0.02, 0.02,  0.01, 0.05,   0.02, 0.01,  0.1,  0.05, 0.1,  0.02, 0.02,],
+              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02, 0.02,],
+              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02, 0.02,],
+              [0.02, 0, 0.05, 0.001, 0.02, 0.0002, 0.02, 0.005, 0.02, 0.02, 0.02, 0.02, 0.02,],]
 
 # layer number
-LAYER_list = [[0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1], # change to 1 layer for lightgcn_tri
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1],
-              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1],] # 4*12, this always no change
-LR = LR_list[dataset][model]
-LAMDA = LAMDA_list[dataset][model]
-LAYER = LAYER_list[dataset][model]
+LAYER_list = [[0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2],
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 2, 2],
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2], # change to 1 layer for lightgcn_tri
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2],
+              [0, 4, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 2],] # 4*12, this always no change
+LR = args.lr #LR_list[dataset][model]
+LAMDA = args.lamda #LAMDA_list[dataset][model]
+LAYER = args.layer #LAYER_list[dataset][model]
 # dimensionality of the embedding layer
-EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim,]
+EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
-BATCH_SIZE = 300000 # 10000/100000 failed for lgcn
-TEST_USER_BATCH_list = [4096, 1024, 512, 20620, 10000] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096
+BATCH_SIZE = args.batch #10000 # 10000/100000 failed for lgcn
+TEST_USER_BATCH_list = [4096, 1024, 512, 4096, 10000] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096
 TEST_USER_BATCH = TEST_USER_BATCH_list[dataset]
-N_EPOCH = 300 # 200
+N_EPOCH = args.epoch #300 # 200
 IF_PRETRAIN = [False, True][0]
 TEST_VALIDATION = 'Validation'  # can be changed automatically
 TOP_K = [2, 5, 10, 20, 50, 100]
@@ -62,7 +66,7 @@ GRAPH_CONV = ['1D', '2D_graph', '2D_hyper_graph'][0] # 2
 PREDICTION = ['InnerProduct', 'MLP3'][0]
 LOSS_FUNCTION = ['BPR', 'CrossEntropy', 'MSE'][0]
 GENERALIZATION = ['Regularization', 'DropOut', 'Regularization+DropOut', 'L2Norm'][0]
-OPTIMIZATION = ['SGD', 'Adagrad', 'RMSProp', 'Adam'][2] # light: 3
+OPTIMIZATION = ['SGD', 'Adagrad', 'RMSProp', 'Adam'][args.opt] # light: 3, lgcn: 2
 IF_TRASFORMATION = [False, True][0]                           # 0 for not having transformation matrix,1 for having
 ACTIVATION = ['None', 'Tanh', 'Sigmoid', 'ReLU'][0]          # select the activation function
 POOLING = ['Concat', 'Sum', 'Max', 'Product', 'MLP3'][1]    # select the pooling strategy, the layer of mlp is also changable

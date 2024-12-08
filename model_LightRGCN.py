@@ -4,8 +4,8 @@
 import tensorflow as tf
 import numpy as np
 
-class model_LightGCN_tri(object):
-    def __init__(self, layer, n_users, n_items, n_personas, emb_dim, lr, lamda, pre_train_latent_factor, if_pretrain, sparse_graph, optimization):
+class model_LightRGCN(object):
+    def __init__(self, layer, n_users, n_items, n_personas, emb_dim, lr, lamda, pre_train_latent_factor, if_pretrain, sparse_graph):
         self.model_name = 'LightGCN_tri'
         self.n_users = n_users
         self.n_items = n_items
@@ -18,7 +18,6 @@ class model_LightGCN_tri(object):
         self.if_pretrain = if_pretrain
         self.A_hat = sparse_graph
         self.layer_weight = [1/(i + 1) for i in range(self.layer + 1)]
-        self.optimization = optimization
 
         # placeholder definition
         # tf.compat.v1.disable_eager_execution() # to disable the eager mode
@@ -63,12 +62,7 @@ class model_LightGCN_tri(object):
         self.loss = self.create_bpr_loss(self.u_embeddings, self.pos_i_embeddings, self.neg_i_embeddings) + \
                     self.lamda * self.regularization(self.u_embeddings_reg, self.pos_i_embeddings_reg,
                                                      self.neg_i_embeddings_reg, self.persona_all_embeddings)
-        
-        if self.optimization == 'RMSProp':
-            self.opt = tf.compat.v1.train.RMSPropOptimizer(learning_rate=self.lr)
-        else:
-            self.opt = tf.compat.v1.train.AdamOptimizer(learning_rate=self.lr)
-
+        self.opt = tf.compat.v1.train.AdamOptimizer(learning_rate=self.lr)
         self.updates = self.opt.minimize(self.loss, var_list=[self.user_embeddings, self.item_embeddings, self.persona_embeddings])
         
         # for inference
@@ -91,3 +85,5 @@ class model_LightGCN_tri(object):
     def regularization(self, users, pos_items, neg_items, personas): # adds the regularization on persona nodes
         regularizer = tf.nn.l2_loss(users) + tf.nn.l2_loss(pos_items) + tf.nn.l2_loss(neg_items) + tf.nn.l2_loss(personas)
         return regularizer
+
+    
