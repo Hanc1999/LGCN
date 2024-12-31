@@ -20,7 +20,7 @@ epsilon = 0.1 ** 10
 root = '../dataset/'
 # path_train = root + Dataset + '/train_data.json'
 u2t_train_path = root + Dataset + '/tri_graph_uidx2tidx_train.json'
-t2p_path = root + Dataset + '/tri_graph_tidx2pidx_lifestyle.json'
+t2p_path = root + Dataset + '/tri_graph_tidx2pidx.json'
 
 if APPROXIMATE:
     # approaximated case
@@ -29,7 +29,7 @@ if APPROXIMATE:
     path_save = root + Dataset + '/graph_embeddings_' + GRAPH_CONV + '_tri_approach.json'
 else:
     # normal case
-    u2p_path = root + Dataset + '/tri_graph_uidx2pidx_lifestyle.json'
+    u2p_path = root + Dataset + '/tri_graph_uidx2pidx.json'
     path_save = root + Dataset + '/graph_embeddings_' + GRAPH_CONV + '_tri.json'
 
 

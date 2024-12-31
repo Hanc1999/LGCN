@@ -36,7 +36,7 @@ class model_LGCN(object):
         ## placeholder definition
         # these are all predefined variables
         # when using: sess.run([model.updates, model.loss], feed_dict={model.users: train_batch_data[:, 0], model.pos_items: train_batch_data[:, 1], model.neg_items: train_batch_data[:, 2], model.keep_prob: KEEP_PORB if MODEL == 'LGCN' else 1})
-        tf.compat.v1.disable_eager_execution() # to disable the eager mode
+        # tf.compat.v1.disable_eager_execution() # to disable the eager mode
         self.users = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.pos_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
         self.neg_items = tf.compat.v1.placeholder(tf.int32, shape=(None,))
