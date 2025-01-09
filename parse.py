@@ -2,7 +2,7 @@ import argparse
 
 def parse_args():
     parser = argparse.ArgumentParser(description="parses for parameter tuning")
-    parser.add_argument("--model", type=int, default=12,) # 6:LightGCN, 8:LGCN, 11:LightGCN_tri, 12:LightRGCN
+    parser.add_argument("--model", type=int, default=12,) # 6:LightGCN, 8:LGCN, 11:LightGCN_tri, 12:LightRGCN, 13:LightGCN_AFD
     parser.add_argument("--dataset", type=int, default=2,)
     parser.add_argument("--pred_dim", type=int, default=128,)
     parser.add_argument("--lr", type=float, default=0.005,)
