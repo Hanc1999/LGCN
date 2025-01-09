@@ -6,14 +6,14 @@ from parse import parse_args
 
 args = parse_args() # take arguments from the command line
 
-model = args.model #12 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri, 12:LightRGCN
+model = args.model #12 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri, 12:LightRGCN, 13:LightGCN_AFD
 dataset = args.dataset         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart, 4: Instacart Full
 pred_dim = args.pred_dim      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
 GPU_INDEX = "0"
 DATASET = ['Amazon', 'Movielens', 'MBA', 'Instacart', 'Instacart_full'][dataset]
-MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN']
+MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN', 'LightGCN_AFD', ]
 MODEL = MODEL_list[model]
 
 ## hyperparameters of all models
@@ -75,9 +75,12 @@ if POOLING == 'Concat': EMB_DIM = int(pred_dim/(LAYER+1))
 ## parameters about model setting (selective for model LGCN)
 PROP_DIM = 128
 PROP_EMB = ['RM', 'SF', 'PE'][1]
-IF_NORM = [False, True][0]
+IF_NORM = [False, True][0] 
+
+## parameters for afd
+AFD_ALPHA = args.afd_alpha
 
 all_para = [GPU_INDEX, DATASET, MODEL, LR, LAMDA, LAYER, EMB_DIM, BATCH_SIZE, TEST_USER_BATCH, N_EPOCH, IF_PRETRAIN,
             TEST_VALIDATION, TOP_K, FREQUENCY_USER, FREQUENCY_ITEM, FREQUENCY, KEEP_PORB, SAMPLE_RATE, GRAPH_CONV,
             PREDICTION, LOSS_FUNCTION, GENERALIZATION, OPTIMIZATION, IF_TRASFORMATION, ACTIVATION, POOLING, PROP_DIM,
-            PROP_EMB, IF_NORM] # last 3 are ignored
+            PROP_EMB, IF_NORM, AFD_ALPHA] # last 3 are ignored

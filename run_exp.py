@@ -30,4 +30,5 @@ today = datetime.today()
 formatted_date = today.strftime('%Y%m%d')
 for i in range(3):
     exsl_path = f'{DATASET}_{MODEL}_{formatted_date}_{LR}_{LAMDA}_{LAYER}_{BATCH_SIZE}_{OPTIMIZATION}_{i}.xlsx'
-    F1_max = train_model.train_model(params.all_para[:26], read_data_res_tri, target_dir + exsl_path, '')
+    # F1_max = train_model.train_model(params.all_para[:26], read_data_res_tri, target_dir + exsl_path, '')
+    F1_max = train_model.train_model(params.all_para, read_data_res_tri, target_dir + exsl_path, '')

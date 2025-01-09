@@ -43,6 +43,10 @@ import model_LightRGCN
 importlib.reload(model_LightRGCN)
 from model_LightRGCN import model_LightRGCN
 
+import model_LightGCN_AFD
+importlib.reload(model_LightGCN_AFD)
+from model_LightGCN_AFD import model_LightGCN_AFD
+
 from model_SGNN import model_SGNN
 
 import test_model
@@ -64,8 +68,9 @@ from tqdm import tqdm
 def train_model(para, data, path_excel, results_save_path=''):
     ## data and hyperparameters
     [train_data, train_data_interaction, user_num, item_num, persona_num, test_data, pre_train_feature, hypergraph_embeddings, graph_embeddings, propagation_embeddings, sparse_propagation_matrix, _] = data
+    # PROP_DIM, PROP_EMB, IF_NORM, AFD_ALPHA
     [_, _, MODEL, LR, LAMDA, LAYER, EMB_DIM, BATCH_SIZE, TEST_USER_BATCH, N_EPOCH, IF_PRETRAIN, _, TOP_K] = para[0:13]
-    if MODEL == 'LGCN' or MODEL == 'LGCN_tri' or MODEL == 'LightGCN_tri' or MODEL == 'LightRGCN': [_, _, _, KEEP_PORB, SAMPLE_RATE, GRAPH_CONV, PREDICTION, LOSS_FUNCTION, GENERALIZATION, OPTIMIZATION, IF_TRASFORMATION, ACTIVATION, POOLING] = para[13:]
+    if MODEL == 'LGCN' or MODEL == 'LGCN_tri' or MODEL == 'LightGCN_tri' or MODEL == 'LightRGCN': [_, _, _, KEEP_PORB, SAMPLE_RATE, GRAPH_CONV, PREDICTION, LOSS_FUNCTION, GENERALIZATION, OPTIMIZATION, IF_TRASFORMATION, ACTIVATION, POOLING, _, _, _, AFD_ALPHA] = para[13:]
     if MODEL == 'SGNN': [_, PROP_EMB, _] = para[13:]
     para_test = [train_data, test_data, user_num, item_num, TOP_K, TEST_USER_BATCH]
     ## Define the model
@@ -82,6 +87,9 @@ def train_model(para, data, path_excel, results_save_path=''):
     if MODEL == 'LGCN_tri': model = model_LGCN_tri(n_users=user_num, n_items=item_num, n_personas=persona_num, lr=LR, lamda=LAMDA, emb_dim=EMB_DIM, layer=LAYER, pre_train_latent_factor=pre_train_feature, graph_embeddings=graph_embeddings, graph_conv = GRAPH_CONV, prediction = PREDICTION, loss_function=LOSS_FUNCTION, generalization = GENERALIZATION, optimization=OPTIMIZATION, if_pretrain=IF_PRETRAIN, if_transformation=IF_TRASFORMATION, activation=ACTIVATION, pooling=POOLING)
     if MODEL == 'LightGCN_tri': model = model_LightGCN_tri(layer=LAYER, n_users=user_num, n_items=item_num, n_personas=persona_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix, optimization=OPTIMIZATION)
     if MODEL == 'LightRGCN': model = model_LightRGCN(layer=LAYER, n_users=user_num, n_items=item_num, n_personas=persona_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix)
+    # if MODEL == 'LightGCN': model = model_LightGCN(layer=LAYER, n_users=user_num, n_items=item_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix)
+    if MODEL == 'LightGCN_AFD': model = model_LightGCN_AFD(layer=LAYER, n_users=user_num, n_items=item_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix, afd_alpha=AFD_ALPHA)
+    # if MODEL == ''
 
     # debug,
     # return model
