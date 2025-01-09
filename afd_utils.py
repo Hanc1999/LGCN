@@ -1,5 +1,5 @@
 import tensorflow as tf
-import numpy as np
+# import numpy as np
 
 def calculate_correlation(x):
     # x should be a 2D TensorFlow tensor
@@ -18,9 +18,12 @@ def calculate_correlation(x):
     corr_matrix = cov_matrix / stddev_matrix # step1-3 should align with torch.corrcoef()
     
     # Step 4: Extract the upper triangular part of the matrix (excluding the diagonal)
-    triu_indices = np.triu_indices_from(np.zeros_like(corr_matrix), k=1) # this step can use numpy since constants
+    # triu_indices = np.triu_indices_from(np.zeros_like(corr_matrix), k=1) # this step can use numpy since constants
     # the k=1 means ignores the diagnal
-    triu_values = tf.gather_nd(corr_matrix, list(zip(triu_indices[0], triu_indices[1])))
+    # triu_values = tf.gather_nd(corr_matrix, list(zip(triu_indices[0], triu_indices[1])))
+    
+    upper_triangular = tf.linalg.band_part(corr_matrix, 0, -1) - tf.linalg.band_part(corr_matrix, 0, 0)
+    triu_values = tf.boolean_mask(upper_triangular, tf.not_equal(upper_triangular, 0))
     
     # Step 5: Compute the Frobenius norm of the extracted upper triangular part
     frobenius_norm = tf.norm(triu_values)

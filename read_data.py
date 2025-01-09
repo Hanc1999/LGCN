@@ -214,8 +214,8 @@ def read_all_data_tri(all_para, approximate=False):
             ## load pre-trained transform bases for LCFN and SGNN
             graph_embeddings = read_bases1(graph_embeddings_1d_path, FREQUENCY) # same as LGCN
         else: assert False, f'Not supported: {MODEL}, {GRAPH_CONV}'
-    elif MODEL in ['LightGCN', 'LightGCN_tri', 'NGCF', 'GCMC', 'LightRGCN', 'LightGCN_AFD']:
-        if MODEL == 'LightGCN_tri':
+    elif MODEL in ['LightGCN', 'LightGCN_tri', 'NGCF', 'GCMC', 'LightRGCN', 'LightGCN_AFD', 'LightGCN_AFD_tri']:
+        if MODEL in ['LightGCN_tri', 'LightGCN_AFD_tri']:
             graph_tri = [train_data_interaction, interactions_u2p, interactions_t2p]
             sparse_propagation_matrix = propagation_matrix_tri(graph_tri, user_num, item_num, persona_num, 'sym_norm')
         elif MODEL in ['LightGCN', 'LightGCN_AFD']:

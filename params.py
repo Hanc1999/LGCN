@@ -6,14 +6,14 @@ from parse import parse_args
 
 args = parse_args() # take arguments from the command line
 
-model = args.model #12 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri, 12:LightRGCN, 13:LightGCN_AFD
+model = args.model #12 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri, 12:LightRGCN, 13:LightGCN_AFD, 14:LightGCN_AFD_tri
 dataset = args.dataset         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart, 4: Instacart Full
 pred_dim = args.pred_dim      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
 GPU_INDEX = "0"
 DATASET = ['Amazon', 'Movielens', 'MBA', 'Instacart', 'Instacart_full'][dataset]
-MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN', 'LightGCN_AFD', ]
+MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN', 'LightGCN_AFD', 'LightGCN_AFD_tri']
 MODEL = MODEL_list[model]
 
 ## hyperparameters of all models

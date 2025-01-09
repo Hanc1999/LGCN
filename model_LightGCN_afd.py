@@ -7,7 +7,7 @@ from afd_utils import calculate_correlation
 
 class model_LightGCN_afd(object):
     def __init__(self, layer, n_users, n_items, emb_dim, lr, lamda, pre_train_latent_factor, if_pretrain, sparse_graph, afd_alpha):
-        self.model_name = 'LightGCN'
+        self.model_name = 'LightGCN_AFD'
         self.n_users = n_users
         self.n_items = n_items
         self.emb_dim = emb_dim
@@ -80,17 +80,17 @@ class model_LightGCN_afd(object):
         regularizer = tf.nn.l2_loss(users) + tf.nn.l2_loss(pos_items) + tf.nn.l2_loss(neg_items)
         return regularizer
 
-    def afd_loss(self, embedding_list):
+    def afd_loss(self, embeddings_list):
         # cor_loss_u = tf.Variable(tf.zeros((1,), dtype=tf.float32))
         # cor_loss_i = tf.Variable(tf.zeros((1,), dtype=tf.float32))
         cor_loss_u = tf.zeros((1,), dtype=tf.float32)
         cor_loss_i = tf.zeros((1,), dtype=tf.float32)
-        
+
         user_layer_correlations = []
         item_layer_correlations = []
 
         for i in range(1, self.layer + 1):
-            user_embeddings, item_embeddings = tf.split(embeddings_list[i], [self.n_users, self.n_items], axis=0)
+            user_embeddings, item_embeddings = tf.split(embeddings_list[i - 1], [self.n_users, self.n_items], axis=0)
             user_layer_correlations.append(calculate_correlation(user_embeddings))
             item_layer_correlations.append(calculate_correlation(item_embeddings))
             
