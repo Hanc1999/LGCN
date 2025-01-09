@@ -42,7 +42,7 @@ LR = args.lr #LR_list[dataset][model]
 LAMDA = args.lamda #LAMDA_list[dataset][model]
 LAYER = args.layer #LAYER_list[dataset][model]
 # dimensionality of the embedding layer
-EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim, pred_dim,]
+EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim, pred_dim, pred_dim,]
 EMB_DIM = EMB_list[model]
 BATCH_SIZE = args.batch #10000 # 10000/100000 failed for lgcn
 TEST_USER_BATCH_list = [4096, 1024, 512, 4096, 10000] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096
