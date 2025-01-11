@@ -3,6 +3,7 @@
 
 import tensorflow as tf
 import numpy as np
+from afd_utils import calculate_correlation
 
 class model_LightGCN_afd_tri(object):
     def __init__(self, layer, n_users, n_items, n_personas, emb_dim, lr, lamda, pre_train_latent_factor, if_pretrain, sparse_graph, optimization, afd_alpha):
