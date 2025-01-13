@@ -201,14 +201,14 @@ def read_all_data_tri(all_para, approximate=False):
     
     # graph_embeddings_2d_path = DIR + 'graph_embeddings_2d.json'                         # 2d graph embeddings
 
-    if MODEL in ['LGCN', 'LGCN_tri']:
+    if MODEL in ['LGCN', 'LGCN_tri', 'LGCN_AFD_tri']:
         if GRAPH_CONV == '1D':
             if not approximate:
                 # normal case
-                graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
+                graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri.json' if MODEL in ['LGCN_tri', 'LGCN_AFD_tri'] else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
             else:
                 # approximated case
-                graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri_approach.json' if MODEL == 'LGCN_tri' else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
+                graph_embeddings_1d_path = DIR + 'graph_embeddings_1d_tri_approach.json' if MODEL in ['LGCN_tri', 'LGCN_AFD_tri'] else  DIR + 'graph_embeddings_1d.json'   # 1d graph embeddings
 
             print(f'Reading graph_embeddings_1d from path: {graph_embeddings_1d_path}')
             ## load pre-trained transform bases for LCFN and SGNN

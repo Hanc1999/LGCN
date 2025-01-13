@@ -17,8 +17,8 @@ import tensorflow as tf
 
 tf.compat.v1.disable_eager_execution() # to disable the eager mode
 
-work_space_dir = './'
-# work_space_dir = "/content/content/MyDrive/CIKM/"
+# work_space_dir = './'
+work_space_dir = "/content/content/MyDrive/CIKM/"
 res_dir = work_space_dir + f"experiment_result/{DATASET}/"
 target_dir = res_dir + f'{MODEL}/'
 # check

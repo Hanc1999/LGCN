@@ -6,14 +6,14 @@ from parse import parse_args
 
 args = parse_args() # take arguments from the command line
 
-model = args.model #12 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri, 12:LightRGCN, 13:LightGCN_AFD, 14:LightGCN_AFD_tri
+model = args.model #12 # 10          # 0:MF, 1:NCF, 2:GCMC, 3:NGCF, 4:SCF, 5:CGMC, 6:LightGCN, 7:LCFN, 8:LGCN, 9:SGNN, 10:LGCN_tri, 11:LightGCN_tri, 12:LightRGCN, 13:LightGCN_AFD, 14:LightGCN_AFD_tri, 15:LGCN_AFD_tri
 dataset = args.dataset         # 0:Amazon, 1:Movielens, 2: MBA, 3: Instacart, 4: Instacart Full
 pred_dim = args.pred_dim      # predictive embedding dimensionality (must align with the pretraining)
 
 ## parameters about experiment setting
 GPU_INDEX = "0"
 DATASET = ['Amazon', 'Movielens', 'MBA', 'Instacart', 'Instacart_full'][dataset]
-MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN', 'LightGCN_AFD', 'LightGCN_AFD_tri']
+MODEL_list = ['MF', 'NCF', 'GCMC', 'NGCF', 'SCF', 'CGMC', 'LightGCN', 'LCFN', 'LGCN', 'SGNN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN', 'LightGCN_AFD', 'LightGCN_AFD_tri', 'LGCN_AFD_tri']
 MODEL = MODEL_list[model]
 
 ## hyperparameters of all models
@@ -42,7 +42,7 @@ LR = args.lr #LR_list[dataset][model]
 LAMDA = args.lamda #LAMDA_list[dataset][model]
 LAYER = args.layer #LAYER_list[dataset][model]
 # dimensionality of the embedding layer
-EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim, pred_dim, pred_dim, pred_dim]
+EMB_list = [pred_dim, int(pred_dim/2), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), int(pred_dim/(LAYER+1)), pred_dim, int(pred_dim/(LAYER+1)), pred_dim, pred_dim, pred_dim, pred_dim, pred_dim, pred_dim, pred_dim, pred_dim]
 EMB_DIM = EMB_list[model]
 BATCH_SIZE = args.batch #10000 # 10000/100000 failed for lgcn
 TEST_USER_BATCH_list = [4096, 1024, 512, 4096, 10000] # select all users for MBA: 4297; Instacart: 20620, originally 512 and 4096

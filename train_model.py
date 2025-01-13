@@ -51,6 +51,10 @@ import model_LightGCN_afd_tri
 importlib.reload(model_LightGCN_afd_tri)
 from model_LightGCN_afd_tri import model_LightGCN_afd_tri
 
+import model_LGCN_afd_tri
+importlib.reload(model_LGCN_afd_tri)
+from model_LGCN_afd_tri import model_LGCN_afd_tri
+
 from model_SGNN import model_SGNN
 
 import test_model
@@ -75,7 +79,7 @@ def train_model(para, data, path_excel, results_save_path=''):
     # PROP_DIM, PROP_EMB, IF_NORM, AFD_ALPHA
     [_, _, MODEL, LR, LAMDA, LAYER, EMB_DIM, BATCH_SIZE, TEST_USER_BATCH, N_EPOCH, IF_PRETRAIN, _, TOP_K] = para[0:13]
     # if MODEL == 'LGCN' or MODEL == 'LGCN_tri' or MODEL == 'LightGCN_tri' or MODEL == 'LightRGCN' or MODEL == 'LightFCN_AFD':
-    if MODEL in ['LGCN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN', 'LightGCN_AFD', 'LightGCN_AFD_tri']:
+    if MODEL in ['LGCN', 'LGCN_tri', 'LightGCN_tri', 'LightRGCN', 'LightGCN_AFD', 'LightGCN_AFD_tri', 'LGCN_AFD_tri']:
         [_, _, _, KEEP_PORB, SAMPLE_RATE, GRAPH_CONV, PREDICTION, LOSS_FUNCTION, GENERALIZATION, OPTIMIZATION, IF_TRASFORMATION, ACTIVATION, POOLING, _, _, _, AFD_ALPHA] = para[13:]
     if MODEL == 'SGNN': [_, PROP_EMB, _] = para[13:]
     para_test = [train_data, test_data, user_num, item_num, TOP_K, TEST_USER_BATCH]
@@ -95,8 +99,8 @@ def train_model(para, data, path_excel, results_save_path=''):
     if MODEL == 'LightRGCN': model = model_LightRGCN(layer=LAYER, n_users=user_num, n_items=item_num, n_personas=persona_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix)
     if MODEL == 'LightGCN_AFD': model = model_LightGCN_afd(layer=LAYER, n_users=user_num, n_items=item_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix, afd_alpha=AFD_ALPHA)
     if MODEL == 'LightGCN_AFD_tri': model = model_LightGCN_afd_tri(layer=LAYER, n_users=user_num, n_items=item_num, n_personas=persona_num, emb_dim=EMB_DIM, lr=LR, lamda=LAMDA, pre_train_latent_factor=pre_train_feature, if_pretrain=IF_PRETRAIN, sparse_graph=sparse_propagation_matrix, optimization=OPTIMIZATION, afd_alpha=AFD_ALPHA)
-
-    # debug,
+    if MODEL == 'LGCN_AFD_tri': model = model_LGCN_afd_tri(n_users=user_num, n_items=item_num, n_personas=persona_num, lr=LR, lamda=LAMDA, emb_dim=EMB_DIM, layer=LAYER, pre_train_latent_factor=pre_train_feature, graph_embeddings=graph_embeddings, graph_conv = GRAPH_CONV, prediction = PREDICTION, loss_function=LOSS_FUNCTION, generalization = GENERALIZATION, optimization=OPTIMIZATION, if_pretrain=IF_PRETRAIN, if_transformation=IF_TRASFORMATION, activation=ACTIVATION, pooling=POOLING, afd_alpha=AFD_ALPHA)
+    
     # return model
 
     config = tf.compat.v1.ConfigProto()
@@ -122,13 +126,13 @@ def train_model(para, data, path_excel, results_save_path=''):
                 for sample in range(batches[batch_num], batches[batch_num + 1]):
                     (user, pos_item) = train_data_interaction[sample]
                     sample_num = 0
-                    while sample_num < (SAMPLE_RATE if (MODEL == 'LGCN' or MODEL == 'LGCN_tri') else 1):
+                    while sample_num < (SAMPLE_RATE if (MODEL in ['LGCN', 'LGCN_tri', 'LGCN_AFD_tri']) else 1):
                         neg_item = int(rd.uniform(0, item_num)) # sample random exclusive items as the negative
                         if not (neg_item in train_data[user]):
                             sample_num += 1
                             train_batch_data.append([user, pos_item, neg_item])
                 train_batch_data = np.array(train_batch_data)
-                _, loss = sess.run([model.updates, model.loss], feed_dict={model.users: train_batch_data[:, 0], model.pos_items: train_batch_data[:, 1], model.neg_items: train_batch_data[:, 2], model.keep_prob: KEEP_PORB if MODEL in ['LGCN', 'LGCN_tri'] else 1})
+                _, loss = sess.run([model.updates, model.loss], feed_dict={model.users: train_batch_data[:, 0], model.pos_items: train_batch_data[:, 1], model.neg_items: train_batch_data[:, 2], model.keep_prob: KEEP_PORB if MODEL in ['LGCN', 'LGCN_tri', 'LGCN_AFD_tri'] else 1})
             ## test the model each epoch
             F1, NDCG = test_model(sess, model, para_test)
             F1_max = max(F1_max, F1[0])
