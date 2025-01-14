@@ -201,7 +201,7 @@ def read_all_data_tri(all_para, approximate=False):
     
     # graph_embeddings_2d_path = DIR + 'graph_embeddings_2d.json'                         # 2d graph embeddings
 
-    if MODEL in ['LGCN', 'LGCN_tri', 'LGCN_AFD_tri']:
+    if MODEL in ['LGCN', 'LGCN_tri', 'LGCN_AFD_tri', 'LGCN_AFD']:
         if GRAPH_CONV == '1D':
             if not approximate:
                 # normal case
